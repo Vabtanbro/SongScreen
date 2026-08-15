@@ -739,20 +739,19 @@
       #onboarding { background: rgba(3, 8, 22, 0.55); }
     }
 
-    /* Mobile onboarding — sits INSIDE the empty band above the player,
-       showing users that this area is tappable. Includes a dashed
-       vertical divider running through it to reinforce left/right split. */
+    /* Mobile onboarding — floats above the player. Uses --player-h
+       (set by JS from the real player height) so it never overlaps,
+       regardless of player content size. */
     #onboarding-mobile {
       display: none;
       position: absolute;
       left: 14px;
       right: 14px;
-      pointer-events: auto;    /* tapping the card dismisses it */
+      pointer-events: none;
       cursor: pointer;
-      /* Position it inside the empty zone: above the raised player,
-         below the shayari. */
-      bottom: calc(80px + env(safe-area-inset-bottom, 20px) + 40px);
-      background: linear-gradient(135deg, rgba(11,37,69,0.72), rgba(6,24,46,0.72));
+      /* Anchor to top of player + 16px gap */
+      bottom: calc(var(--player-h, 110px) + env(safe-area-inset-bottom, 0px) + 28px);
+      background: linear-gradient(135deg, rgba(11,37,69,0.85), rgba(6,24,46,0.85));
       border: 1.5px dashed rgba(232,163,61,0.55);
       border-radius: 16px;
       padding: 18px 16px 16px;
@@ -810,6 +809,8 @@
     }
     @media (max-width: 720px) {
       #onboarding-mobile { display: block; }
+      /* Only clickable while onboarding is actively shown */
+      #onboarding.show #onboarding-mobile { pointer-events: auto; }
     }
     /* Subtle "left / right" tint on each half to reinforce the split */
     #onboarding::before,
@@ -964,72 +965,67 @@
     }
     #shayari.swap { opacity: 0; transform: translateY(6px); }
 
-    /* ═══ Player (bottom) ═══════════════════════════════════════ */
+    /* ═══════════════════════════════════════════════════════════════
+       PLAYER
+       Fixed to viewport bottom, safe-area aware. Two logical rows:
+         Row 1 → full-width seek bar (its own tap target)
+         Row 2 → [disc] [meta] [transport] [vol] [settings] (flex)
+       Grid keeps them from ever overlapping, no matter what.
+    ═══════════════════════════════════════════════════════════════ */
     #player {
       position: fixed;
-      bottom: 14px;
-      left: 14px;
-      right: 14px;
+      left: 12px;
+      right: 12px;
+      bottom: calc(12px + env(safe-area-inset-bottom, 0px));
       max-width: 1080px;
       margin: 0 auto;
       z-index: 30;
+      display: grid;
+      grid-template-rows: auto auto;
+      gap: 6px;
+      padding: 8px 16px 12px;
       background: linear-gradient(135deg, rgba(6,24,46,0.92), rgba(11,37,69,0.94));
       border: 1px solid rgba(232,163,61,0.28);
-      border-radius: 20px;
+      border-radius: 18px;
       backdrop-filter: blur(28px) saturate(1.4);
       -webkit-backdrop-filter: blur(28px) saturate(1.4);
-      padding: 12px 18px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
       box-shadow:
         0 24px 60px rgba(0,0,0,0.6),
-        0 0 0 1px rgba(232,163,61,0.05),
-        inset 0 1px 0 rgba(255,255,255,0.1);
-    }
-    /* Subtle warm glow above player edge */
-    #player::before {
-      content: '';
-      position: absolute;
-      top: -1px;
-      left: 20%;
-      right: 20%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(232,163,61,0.5), transparent);
-      pointer-events: none;
+        inset 0 1px 0 rgba(255,255,255,0.08);
     }
 
-    /* ═══ Seek bar ═══════════════════════════════════════════════ */
+    /* ─── Row 1: Seek bar ─────────────────────────────────────────
+       In-flow, full-width, generous tap target. Track is 4px visible
+       but hit-area is the whole 22px row. No position:absolute tricks. */
     #seek {
-      position: absolute;
-      top: -6px;
-      left: 14px;
-      right: 14px;
-      height: 20px;
-      cursor: pointer;
+      grid-row: 1;
+      position: relative;
+      width: 100%;
+      height: 22px;
       display: flex;
       align-items: center;
+      cursor: pointer;
       touch-action: none;
-      z-index: 2;
+      user-select: none;
+      -webkit-user-select: none;
     }
-    /* Ripple hit-target hint — thin visible bar centered vertically */
     #seek-track {
       position: relative;
       width: 100%;
-      height: 3px;
+      height: 4px;
       background: rgba(255,255,255,0.14);
       border-radius: 999px;
-      overflow: visible;
       transition: height 0.15s ease;
     }
-    #seek:hover #seek-track,
-    #seek.scrubbing #seek-track { height: 5px; }
+    #seek.scrubbing #seek-track,
+    #seek:hover      #seek-track { height: 6px; }
     #seek-fill {
       height: 100%;
       width: 0%;
       background: linear-gradient(90deg, var(--hr-red), var(--hr-amber));
       border-radius: 999px;
       pointer-events: none;
+      box-shadow: 0 0 8px rgba(232,163,61,0.35);
       transition: width 0.35s linear;
     }
     #seek.scrubbing #seek-fill { transition: none; }
@@ -1043,36 +1039,32 @@
       border-radius: 50%;
       background: var(--hr-amber);
       opacity: 0;
-      box-shadow: 0 0 0 3px rgba(232,163,61,0.25);
+      box-shadow: 0 0 0 3px rgba(232,163,61,0.3), 0 2px 6px rgba(0,0,0,0.4);
       pointer-events: none;
       transition: opacity 0.15s ease, left 0.35s linear;
     }
-    #seek:hover #seek-knob,
-    #seek.scrubbing #seek-knob { opacity: 1; }
-    #seek.scrubbing #seek-knob { transition: opacity 0.15s ease; }
+    #seek:hover      #seek-knob,
+    #seek.scrubbing  #seek-knob { opacity: 1; }
+    #seek.scrubbing  #seek-knob { transition: opacity 0.15s ease; }
 
-    /* Time labels sit outside the player top-left / top-right */
-    #seek-times {
-      position: absolute;
-      top: -22px;
-      left: 14px;
-      right: 14px;
-      display: flex;
-      justify-content: space-between;
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: rgba(237,227,206,0.4);
-      pointer-events: none;
-      letter-spacing: 0.5px;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-    }
-    #seek:hover ~ #seek-times,
-    #seek.scrubbing ~ #seek-times { opacity: 1; }
-    /* Always show on mobile since hover doesn't exist */
+    /* Mobile: bigger hit area + always-visible knob for discoverability */
     @media (max-width: 720px) {
-      #seek-times { opacity: 0.7; }
-      #seek { top: -8px; }
+      #seek         { height: 28px; }
+      #seek-track   { height: 5px; }
+      #seek-knob    { opacity: 0.9; width: 14px; height: 14px; }
+      #seek.scrubbing #seek-track { height: 8px; }
+    }
+
+    /* Hidden — kept for compatibility with existing polling code */
+    #seek-times { display: none; }
+
+    /* ─── Row 2: Controls row ─────────────────────────────────── */
+    #player-controls {
+      grid-row: 2;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;   /* let flex children shrink cleanly */
     }
 
     /* Vinyl disc */
@@ -1520,32 +1512,46 @@
     }
     #hint.gone { opacity: 0; }
 
-    /* ═══ Mobile ═════════════════════════════════════════════════ */
+    /* ═══════════════════════════════════════════════════════════════
+       MOBILE OVERRIDES
+       Layout tuning for narrow viewports. Player position/size is
+       already defined mobile-first in the base rules — no overrides
+       needed for that. Just tweak content density here.
+    ═══════════════════════════════════════════════════════════════ */
     @media (max-width: 720px) {
-      body { padding-bottom: 200px; }
+      /* Reserve room at the bottom for the fixed player + onboarding.
+         ≈ player height 110px + safe-area + buffer. */
+      body { padding-bottom: 170px; }
+
+      /* Header: compact pills */
       header { padding: 10px 12px; }
-      .pill-live .name { display: none; }
-      .pill-live .sep { display: none; }
-      .pill-route { padding: 5px 10px; }
-      .pill-route .txt { font-size: 12px; }
-      main { padding: 6px 12px 20px; }
-      #stage { margin-top: 10px; }
-      #road { margin-left: 12px; margin-right: 12px; }
+      .pill-live .name,
+      .pill-live .sep    { display: none; }
+      .pill-route        { padding: 5px 10px; }
+      .pill-route .txt   { font-size: 12px; }
+
+      /* Main flow */
+      main    { padding: 6px 12px 20px; }
+      #stage  { margin-top: 10px; }
+      #road   { margin-left: 12px; margin-right: 12px; }
+
+      /* Buttons: smaller, hide keyboard hint */
       .btn-horn { padding: 12px 20px; font-size: 16px; }
       .btn-horn .kbd { display: none; }
       .btn-bell { padding: 10px 16px; font-size: 14px; }
+
+      /* Shayari: tighter margins */
       #shayari { margin: 20px 12px 0; padding: 14px 18px; }
-      #vol { display: none; }
-      #player {
-        left: 8px; right: 8px;
-        bottom: max(70px, env(safe-area-inset-bottom, 20px));
-        padding: 10px 12px; gap: 10px; border-radius: 16px;
-      }
-      #disc-wrap { width: 48px; height: 48px; }
-      #track-title { font-size: 13px; }
-      #track-artist { font-size: 11px; }
-      #play-btn { width: 40px; height: 40px; }
-      #hint { display: none; }
+
+      /* Player: shrink controls only, layout is defined in base rules */
+      #player          { padding: 6px 12px 10px; border-radius: 16px; }
+      #player-controls { gap: 10px; }
+      #disc-wrap       { width: 46px; height: 46px; }
+      #track-title     { font-size: 13px; }
+      #track-artist    { font-size: 11px; }
+      #play-btn        { width: 38px; height: 38px; }
+      #vol             { display: none; }
+      #hint            { display: none; }
     }
   </style>
 </head>
@@ -1882,7 +1888,7 @@
 
 <!-- ═══ Player ═══════════════════════════════════════════════════ -->
 <div id="player" class="no-skip">
-  <!-- Seek bar (progress + interactions) -->
+  <!-- Row 1: Seek bar -->
   <div id="seek" role="slider" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
     <div id="seek-track">
       <div id="seek-fill"></div>
@@ -1891,6 +1897,8 @@
   </div>
   <div id="seek-times"><span id="seek-cur">0:00</span><span id="seek-dur">0:00</span></div>
 
+  <!-- Row 2: Controls -->
+  <div id="player-controls">
   <div id="disc-wrap">
     <div id="disc">
       <div id="disc-inner">
@@ -1933,6 +1941,7 @@
       <circle cx="12" cy="12" r="3"/>
     </svg>
   </button>
+  </div><!-- /#player-controls -->
 </div>
 
 <!-- Settings overlay -->
@@ -2570,7 +2579,7 @@ const SKIP_SECONDS = 10;
 const DBL_MS       = 320;              // dbl-tap window
 
 function seekBy(delta) {
-  if (!ytReady) return;
+  if (!ytReady || !ytPlayer || !ytPlayer.seekTo) return;
   try {
     const dur = ytPlayer.getDuration()    || 0;
     const cur = ytPlayer.getCurrentTime() || 0;
@@ -2644,84 +2653,6 @@ function pctFromEvent(e) {
 // Long-press threshold — hold this long before drag becomes scrub
 const LONG_PRESS_MS = 200;
 
-seekEl.addEventListener('pointerdown', (e) => {
-  e.preventDefault();
-  seekEl.setPointerCapture(e.pointerId);
-
-  const now  = e.timeStamp || Date.now();
-  const isDbl = (now - seekLastTap < DBL_MS) && Math.abs(e.clientX - seekLastX) < 100;
-  seekLastTap = now;
-  seekLastX   = e.clientX;
-
-  if (isDbl) {
-    // Dbl-tap the seek bar: left half = -10s, right half = +10s
-    const r = seekEl.getBoundingClientRect();
-    if ((e.clientX - r.left) < r.width / 2) skipLeft();
-    else                                    skipRight();
-    seekLastTap = 0;
-    dismissOnboarding();
-    return;
-  }
-
-  // Otherwise, start long-press timer. If the user holds past the
-  // threshold OR moves >4px, we enter scrub mode. If they release
-  // before that, we treat it as a plain click-to-jump.
-  const startX = e.clientX;
-  let movedFar = false;
-
-  const onMove = (mv) => {
-    const dx = Math.abs(mv.clientX - startX);
-    if (!seekScrubbing && dx > 4) {
-      enterScrub();
-    }
-    if (seekScrubbing) {
-      const pct = pctFromEvent(mv);
-      seekScrubPct = pct;
-      setSeekVisual(pct);
-      if (ytReady) {
-        try {
-          const dur = ytPlayer.getDuration() || 0;
-          curEl.textContent = fmtTime(dur * pct / 100);
-        } catch (e) {}
-      }
-    }
-  };
-
-  const onUp = (up) => {
-    seekEl.removeEventListener('pointermove', onMove);
-    seekEl.removeEventListener('pointerup',   onUp);
-    seekEl.removeEventListener('pointercancel', onUp);
-    clearTimeout(seekLongPressT);
-
-    if (seekScrubbing) {
-      // Commit scrub position
-      if (ytReady) {
-        try {
-          const dur = ytPlayer.getDuration() || 0;
-          ytPlayer.seekTo(dur * seekScrubPct / 100, true);
-        } catch (e) {}
-      }
-      exitScrub();
-    } else if (!movedFar) {
-      // Plain click → jump to that spot
-      const pct = pctFromEvent(up);
-      setSeekVisual(pct);
-      if (ytReady) {
-        try {
-          const dur = ytPlayer.getDuration() || 0;
-          ytPlayer.seekTo(dur * pct / 100, true);
-        } catch (e) {}
-      }
-    }
-    dismissOnboarding();
-  };
-
-  seekLongPressT = setTimeout(enterScrub, LONG_PRESS_MS);
-  seekEl.addEventListener('pointermove',   onMove);
-  seekEl.addEventListener('pointerup',     onUp);
-  seekEl.addEventListener('pointercancel', onUp);
-});
-
 function enterScrub() {
   if (seekScrubbing) return;
   seekScrubbing = true;
@@ -2732,29 +2663,208 @@ function exitScrub() {
   seekEl.classList.remove('scrubbing');
 }
 
+// Commit a seek to YouTube at the given percentage of duration
+function commitSeekPct(pct) {
+  if (!ytReady || !ytPlayer || !ytPlayer.seekTo) return;
+  try {
+    const dur = ytPlayer.getDuration() || 0;
+    if (!dur) return;
+    ytPlayer.seekTo(dur * pct / 100, true);
+  } catch (err) {}
+}
+
+// Unified seek bar interaction — works with mouse, pen, touch.
+// Manages state as (startX, startY, startTs) → onMove decides scrub vs tap
+// → onUp commits either a jump or the final scrub position.
+function initSeekBar() {
+  let startX = 0, startY = 0, startTs = 0;
+  let downPct = 0;
+  let isDown  = false;
+  let pointerId = null;
+
+  function pctFromXY(clientX) {
+    const r = seekEl.getBoundingClientRect();
+    return Math.max(0, Math.min(100, ((clientX - r.left) / r.width) * 100));
+  }
+
+  function onDown(clientX, clientY, ts, ptrId) {
+    isDown    = true;
+    startX    = clientX;
+    startY    = clientY;
+    startTs   = ts;
+    pointerId = ptrId;
+    downPct   = pctFromXY(clientX);
+
+    // Check for double-tap on the seek bar itself
+    const isDbl = (ts - seekLastTap < DBL_MS) && Math.abs(clientX - seekLastX) < 100;
+    seekLastTap = ts;
+    seekLastX   = clientX;
+    if (isDbl) {
+      const r = seekEl.getBoundingClientRect();
+      if ((clientX - r.left) < r.width / 2) skipLeft();
+      else                                  skipRight();
+      seekLastTap = 0;
+      isDown = false;
+      dismissOnboarding();
+      return;
+    }
+
+    // Start long-press timer for scrub mode
+    clearTimeout(seekLongPressT);
+    seekLongPressT = setTimeout(() => { if (isDown) enterScrub(); }, LONG_PRESS_MS);
+  }
+
+  function onMove(clientX, clientY) {
+    if (!isDown) return;
+    const dx = Math.abs(clientX - startX);
+    const dy = Math.abs(clientY - startY);
+    // If vertical movement dominates, user is trying to scroll — bail out
+    if (!seekScrubbing && dy > dx && dy > 8) {
+      isDown = false;
+      clearTimeout(seekLongPressT);
+      return;
+    }
+    // Horizontal drag > 4px = enter scrub mode
+    if (!seekScrubbing && dx > 4) enterScrub();
+    if (seekScrubbing) {
+      const pct = pctFromXY(clientX);
+      seekScrubPct = pct;
+      setSeekVisual(pct);
+      if (ytReady) {
+        try {
+          const dur = ytPlayer.getDuration() || 0;
+          if (dur) curEl.textContent = fmtTime(dur * pct / 100);
+        } catch (e) {}
+      }
+    }
+  }
+
+  function onUp(clientX, ts) {
+    if (!isDown) return;
+    isDown = false;
+    clearTimeout(seekLongPressT);
+    const dx = Math.abs(clientX - startX);
+    const dt = ts - startTs;
+
+    if (seekScrubbing) {
+      commitSeekPct(seekScrubPct);
+      exitScrub();
+    } else if (dx < 8 && dt < 500) {
+      // Plain tap — jump to that spot
+      const pct = pctFromXY(clientX);
+      setSeekVisual(pct);
+      commitSeekPct(pct);
+    }
+    dismissOnboarding();
+  }
+
+  // ─── Touch handlers (mobile) ────────────────────────────────────
+  // Using touchstart/move/end directly is more reliable than pointer
+  // events on mobile Safari, especially inside `.no-skip` containers.
+  seekEl.addEventListener('touchstart', (e) => {
+    if (!e.touches || e.touches.length !== 1) return;
+    const t = e.touches[0];
+    e.preventDefault();
+    e.stopPropagation();
+    onDown(t.clientX, t.clientY, e.timeStamp || Date.now(), null);
+  }, { passive: false });
+
+  seekEl.addEventListener('touchmove', (e) => {
+    if (!e.touches || e.touches.length !== 1 || !isDown) return;
+    const t = e.touches[0];
+    // Prevent scroll only when we're actually scrubbing (not on vertical scroll)
+    if (seekScrubbing) e.preventDefault();
+    onMove(t.clientX, t.clientY);
+  }, { passive: false });
+
+  seekEl.addEventListener('touchend', (e) => {
+    if (!e.changedTouches || e.changedTouches.length !== 1) return;
+    const t = e.changedTouches[0];
+    e.preventDefault();
+    onUp(t.clientX, e.timeStamp || Date.now());
+  }, { passive: false });
+
+  seekEl.addEventListener('touchcancel', (e) => {
+    isDown = false;
+    exitScrub();
+    clearTimeout(seekLongPressT);
+  });
+
+  // ─── Mouse handlers (desktop) ───────────────────────────────────
+  seekEl.addEventListener('mousedown', (e) => {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    e.stopPropagation();
+    onDown(e.clientX, e.clientY, e.timeStamp || Date.now(), null);
+
+    // Track globally so drag continues even if cursor leaves the bar
+    const mv = (mv) => onMove(mv.clientX, mv.clientY);
+    const up = (up) => {
+      window.removeEventListener('mousemove', mv);
+      window.removeEventListener('mouseup',   up);
+      onUp(up.clientX, up.timeStamp || Date.now());
+    };
+    window.addEventListener('mousemove', mv);
+    window.addEventListener('mouseup',   up);
+  });
+}
+
+initSeekBar();
+
 // Global double-tap. Fires anywhere on the empty scene (text, hero,
 // bus, road, shayari) — EXCEPT inside `.no-skip` (real controls).
-// Works on both desktop and mobile: on mobile the "clear zone" is
-// naturally the empty area between the shayari and the player, since
-// everything above is a real element or a .no-skip button.
+// Uses touchstart on touch devices (reliable on iOS body padding) and
+// pointerdown on desktop. NOT both, or every tap doubles.
 (function attachGlobalDoubleTap() {
   let lastTs = 0;
   let lastX  = 0;
-  document.addEventListener('pointerdown', (e) => {
-    if (e.target.closest('.no-skip')) return;
-    if (e.button !== undefined && e.button !== 0) return;
-    const now = e.timeStamp || Date.now();
-    if (now - lastTs < DBL_MS && Math.abs(e.clientX - lastX) < 80) {
+  const HAS_TOUCH = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+
+  const handle = (x, ts, target) => {
+    if (target && target.closest && target.closest('.no-skip')) return false;
+    if (ts - lastTs < DBL_MS && Math.abs(x - lastX) < 80) {
       lastTs = 0;
       const half = window.innerWidth / 2;
-      if (e.clientX < half) skipLeft();
-      else                  skipRight();
-      e.preventDefault();
+      if (x < half) skipLeft();
+      else          skipRight();
+      return true;   // consumed as a skip
     } else {
-      lastTs = now;
-      lastX  = e.clientX;
+      lastTs = ts;
+      lastX  = x;
+      return false;
     }
-  });
+  };
+
+  if (HAS_TOUCH) {
+    // Track touch start position so we can distinguish tap from scroll.
+    let startX = 0, startY = 0, startTs = 0;
+    document.documentElement.addEventListener('touchstart', (e) => {
+      if (!e.touches || e.touches.length !== 1) return;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      startTs = e.timeStamp || Date.now();
+    }, { passive: true });
+
+    document.documentElement.addEventListener('touchend', (e) => {
+      if (!e.changedTouches || e.changedTouches.length !== 1) return;
+      const t = e.changedTouches[0];
+      const now = e.timeStamp || Date.now();
+      // Only count as tap if finger moved <10px and released within 500ms
+      const dx = Math.abs(t.clientX - startX);
+      const dy = Math.abs(t.clientY - startY);
+      if (dx > 10 || dy > 10 || (now - startTs) > 500) return;
+
+      const consumed = handle(t.clientX, now, e.target);
+      if (consumed) e.preventDefault();
+    }, { passive: false });
+  } else {
+    // Desktop
+    document.addEventListener('pointerdown', (e) => {
+      if (e.button !== undefined && e.button !== 0) return;
+      const consumed = handle(e.clientX, e.timeStamp || Date.now(), e.target);
+      if (consumed) e.preventDefault();
+    });
+  }
 })();
 
 // ── Onboarding hint (shows every page load) ───────────────────────
@@ -2777,6 +2887,21 @@ function dismissOnboarding() {
 
 // Show every page load — small delay so it doesn't feel jumpy on arrival
 setTimeout(showOnboarding, 800);
+
+// Publish the real player height as a CSS variable so onboarding-mobile
+// (and any future overlay) can position itself above the player without
+// magic numbers. Keeps things right when player content or viewport
+// changes.
+function updatePlayerHeightVar() {
+  const p = document.getElementById('player');
+  if (!p) return;
+  const h = p.getBoundingClientRect().height;
+  document.documentElement.style.setProperty('--player-h', h + 'px');
+}
+updatePlayerHeightVar();
+window.addEventListener('resize', updatePlayerHeightVar);
+// Player height can change when the track title wraps to 2 lines etc.
+new ResizeObserver(updatePlayerHeightVar).observe(document.getElementById('player'));
 </script>
 
 </body>
