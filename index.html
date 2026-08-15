@@ -1,0 +1,1732 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>हरियाणा रोडवेज · रूट 47 · NH-9</title>
+  <meta name="description" content="रूट 47 · दिल्ली से हिसार, वाया रोहतक। खिड़की वाली सीट खाली है। पुराने बॉलीवुड गाने चलाओ।">
+  <meta name="theme-color" content="#0B2545">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi:ital@0;1&family=Hind:wght@400;500;600;700;800&family=Rozha+One&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ═══ Reset & Base ═══════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --hr-navy:   #0B2545;
+      --hr-blue:   #1B4B8F;
+      --hr-blue2:  #2A6BB8;
+      --hr-red:    #C6371F;
+      --hr-cream:  #EDE3CE;
+      --hr-amber:  #E8A33D;
+      --hr-yellow: #FDE047;
+      --hr-dark:   #050D1A;
+      --hr-ink:    #06182E;
+    }
+
+    html, body {
+      height: 100%;
+      overscroll-behavior: none;
+    }
+    body {
+      font-family: 'Hind', sans-serif;
+      color: var(--hr-cream);
+      background:
+        radial-gradient(ellipse 90% 60% at 50% 100%, rgba(27,75,143,0.35) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 50% 40%, rgba(232,163,61,0.08) 0%, transparent 60%),
+        linear-gradient(180deg, #030816 0%, #050D1A 40%, #0B2545 100%);
+      min-height: 100dvh;
+      overflow-x: hidden;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      padding-bottom: 120px;
+    }
+
+    /* Subtle film grain over everything */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 40;
+      opacity: 0.06;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+      mix-blend-mode: overlay;
+    }
+
+    /* Ambient stars */
+    #stars {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.6), transparent),
+        radial-gradient(1px 1px at 20% 60%, rgba(255,255,255,0.4), transparent),
+        radial-gradient(1px 1px at 35% 15%, rgba(255,255,255,0.55), transparent),
+        radial-gradient(1.5px 1.5px at 50% 40%, rgba(255,255,255,0.6), transparent),
+        radial-gradient(1px 1px at 65% 8%,  rgba(255,255,255,0.5), transparent),
+        radial-gradient(1px 1px at 78% 30%, rgba(255,255,255,0.45), transparent),
+        radial-gradient(1.5px 1.5px at 90% 22%, rgba(255,255,255,0.6), transparent),
+        radial-gradient(1px 1px at 12% 45%, rgba(255,255,255,0.3), transparent),
+        radial-gradient(1px 1px at 88% 50%, rgba(255,255,255,0.35), transparent);
+      background-repeat: no-repeat;
+      background-size: 100% 55%;
+      animation: starPulse 6s ease-in-out infinite alternate;
+    }
+    @keyframes starPulse {
+      from { opacity: 0.6; }
+      to   { opacity: 1; }
+    }
+
+    /* ═══ Header ═════════════════════════════════════════════════ */
+    header {
+      position: relative;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 20px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: rgba(11,37,69,0.75);
+      border: 1px solid rgba(237,227,206,0.15);
+      border-radius: 999px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--hr-cream);
+      white-space: nowrap;
+    }
+
+    .pill-live {
+      background: rgba(0,0,0,0.7);
+    }
+    .pill-live .dot {
+      position: relative;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #10B981;
+      box-shadow: 0 0 8px #10B981;
+    }
+    .pill-live .dot::before {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      background: #10B981;
+      opacity: 0.5;
+      animation: ping 1.8s cubic-bezier(0,0,0.2,1) infinite;
+    }
+    @keyframes ping {
+      0%   { transform: scale(1);   opacity: 0.5; }
+      75%,100% { transform: scale(2); opacity: 0; }
+    }
+    .pill-live .plate {
+      color: var(--hr-amber);
+      font-family: 'DM Mono', monospace;
+      font-weight: 700;
+      letter-spacing: 1px;
+      font-size: 11px;
+    }
+    .pill-live .sep { opacity: 0.4; }
+    .pill-live .name {
+      font-family: 'Tiro Devanagari Hindi', serif;
+      color: white;
+      font-size: 13px;
+    }
+
+    .pill-route {
+      background: rgba(198,55,31,0.15);
+      border-color: rgba(232,163,61,0.35);
+      color: var(--hr-amber);
+    }
+    .pill-route svg { width: 15px; height: 15px; }
+    .pill-route .txt {
+      font-family: 'Tiro Devanagari Hindi', serif;
+      font-size: 13px;
+    }
+
+    /* ═══ Hero ═══════════════════════════════════════════════════ */
+    main {
+      position: relative;
+      z-index: 10;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 10px 20px 40px;
+      text-align: center;
+    }
+
+    .hero-title {
+      font-family: 'Rozha One', serif;
+      font-size: clamp(64px, 14vw, 140px);
+      line-height: 0.95;
+      background: linear-gradient(180deg, #FEF3C7 0%, #FDE047 40%, #E8A33D 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 6px 20px rgba(232,163,61,0.35));
+      letter-spacing: -0.02em;
+      margin-top: 6px;
+    }
+
+    .hero-sub {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+      padding: 6px 18px;
+      background: rgba(0,0,0,0.45);
+      border: 1px solid rgba(232,163,61,0.25);
+      border-radius: 999px;
+      backdrop-filter: blur(12px);
+      font-family: 'Tiro Devanagari Hindi', serif;
+      font-size: 13px;
+      color: var(--hr-cream);
+      font-weight: 600;
+    }
+    .hero-sub .em { color: var(--hr-amber); }
+
+    /* ═══ Bus + Road stage ═══════════════════════════════════════ */
+    #stage {
+      position: relative;
+      margin: 28px auto 0;
+      max-width: 940px;
+      aspect-ratio: 16 / 8;
+    }
+
+    /* Headlight glow behind bus */
+    #headlight-glow {
+      position: absolute;
+      right: -6%;
+      top: 40%;
+      width: 44%;
+      height: 60%;
+      background: radial-gradient(ellipse at left center,
+        rgba(255,240,180,0.55) 0%,
+        rgba(255,220,120,0.25) 30%,
+        rgba(255,200,100,0.08) 55%,
+        transparent 75%);
+      filter: blur(4px);
+      pointer-events: none;
+      z-index: 1;
+      transform: rotate(-3deg);
+      transition: opacity 0.4s;
+    }
+    body.lights-off #headlight-glow { opacity: 0.15; }
+
+    /* Bus wrapper */
+    #bus {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      display: block;
+      filter: drop-shadow(0 22px 30px rgba(0,0,0,0.65));
+      animation: busIdle 3s ease-in-out infinite;
+    }
+    @keyframes busIdle {
+      0%,100% { transform: translateY(0); }
+      50%     { transform: translateY(-4px); }
+    }
+    body.horning #bus { animation: busShake 0.3s ease-in-out; }
+    @keyframes busShake {
+      0%,100% { transform: translateY(0) translateX(0); }
+      25%     { transform: translateY(-4px) translateX(-3px); }
+      75%     { transform: translateY(-4px) translateX(3px); }
+    }
+
+    /* Destination board — floats above bus */
+    #dest-board {
+      position: absolute;
+      top: 4%;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 3px 12px;
+      background: var(--hr-cream);
+      border: 2px solid var(--hr-red);
+      border-radius: 4px;
+      font-family: 'Tiro Devanagari Hindi', serif;
+      font-size: clamp(11px, 1.5vw, 15px);
+      font-weight: 700;
+      color: var(--hr-red);
+      white-space: nowrap;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+    }
+    #dest-board .marker { color: #DC2626; }
+
+    /* Road under bus */
+    #road {
+      position: relative;
+      z-index: 3;
+      margin: -14px auto 0;
+      max-width: 940px;
+      height: 32px;
+      background: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
+      border-top: 2px solid rgba(232,163,61,0.35);
+      border-radius: 0 0 14px 14px;
+      overflow: hidden;
+      box-shadow: inset 0 3px 12px rgba(0,0,0,0.7);
+    }
+    #road-dashes {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      padding-left: 20px;
+      animation: dashScroll 0.7s linear infinite;
+    }
+    #road-dashes .d {
+      width: 44px;
+      height: 4px;
+      background: var(--hr-yellow);
+      border-radius: 2px;
+      flex-shrink: 0;
+      box-shadow: 0 0 6px rgba(253,224,71,0.4);
+    }
+    @keyframes dashScroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-84px); }
+    }
+    body.stopped #road-dashes { animation-play-state: paused; }
+
+    /* ═══ Horn Button (signature 1) ══════════════════════════════ */
+    .stage-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin: 26px auto 0;
+      flex-wrap: wrap;
+    }
+
+    .btn-horn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 26px;
+      background: linear-gradient(135deg, var(--hr-red) 0%, #A02818 100%);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 999px;
+      font-family: 'Tiro Devanagari Hindi', serif;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow:
+        0 10px 30px rgba(198,55,31,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.2);
+      transition: transform 0.1s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-horn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 34px rgba(198,55,31,0.55);
+    }
+    .btn-horn:active { transform: translateY(0) scale(0.97); }
+    .btn-horn .ping {
+      position: relative;
+      display: inline-flex;
+      width: 12px; height: 12px;
+    }
+    .btn-horn .ping::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--hr-amber);
+      border-radius: 50%;
+      animation: ping 1.4s ease-out infinite;
+      opacity: 0.7;
+    }
+    .btn-horn .ping::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: white;
+      border-radius: 50%;
+    }
+    .btn-horn .kbd {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      background: rgba(0,0,0,0.35);
+      color: var(--hr-amber);
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-weight: 500;
+      letter-spacing: 1px;
+    }
+
+    .btn-bell,
+    .btn-light {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: rgba(11,37,69,0.75);
+      color: var(--hr-cream);
+      border: 1px solid rgba(232,163,61,0.35);
+      border-radius: 999px;
+      font-family: 'Tiro Devanagari Hindi', serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: all 0.18s;
+    }
+    .btn-bell:hover,
+    .btn-light:hover { background: rgba(27,75,143,0.85); border-color: var(--hr-amber); }
+    .btn-bell:active,
+    .btn-light:active { transform: scale(0.96); }
+    .btn-light svg { width: 16px; height: 16px; }
+
+    /* Headlights ON state — amber pill matching Roadways-Wala */
+    .btn-light.on {
+      background: #FDE68A;
+      color: #7F1D1D;
+      border-color: #F59E0B;
+      box-shadow: 0 0 20px rgba(253,224,71,0.35);
+    }
+    .btn-light.on svg { color: #7F1D1D; }
+
+    /* Horn flash */
+    #horn-flash {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(255,240,150,0.25), transparent 70%);
+      pointer-events: none;
+      z-index: 45;
+      opacity: 0;
+      transition: opacity 0.08s;
+    }
+    #horn-flash.on { opacity: 1; }
+
+    /* Horn toast */
+    #horn-toast {
+      position: fixed;
+      top: 90px;
+      left: 50%;
+      transform: translateX(-50%) scale(0.8) translateY(-20px);
+      background: var(--hr-amber);
+      color: var(--hr-navy);
+      font-family: 'Tiro Devanagari Hindi', serif;
+      font-size: 22px;
+      font-weight: 800;
+      padding: 10px 26px;
+      border-radius: 999px;
+      pointer-events: none;
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 55;
+      white-space: nowrap;
+      box-shadow: 0 14px 40px rgba(232,163,61,0.5);
+    }
+    #horn-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) scale(1) translateY(0);
+    }
+
+    /* ═══ Shayari (signature 3) ══════════════════════════════════ */
+    #shayari {
+      max-width: 640px;
+      margin: 26px auto 0;
+      padding: 18px 24px;
+      background: linear-gradient(135deg, rgba(11,37,69,0.5), rgba(6,24,46,0.35));
+      border: 1px solid rgba(232,163,61,0.2);
+      border-radius: 16px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      text-align: center;
+      transition: opacity 0.6s;
+    }
+    #shayari .quote-mark {
+      font-family: 'Rozha One', serif;
+      font-size: 30px;
+      color: var(--hr-amber);
+      opacity: 0.6;
+      line-height: 0.6;
+    }
+    #shayari .text {
+      font-family: 'Tiro Devanagari Hindi', serif;
+      font-size: clamp(15px, 2.2vw, 20px);
+      color: var(--hr-cream);
+      font-style: italic;
+      line-height: 1.5;
+      margin: 4px 0;
+    }
+    #shayari .attr {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(232,163,61,0.6);
+      margin-top: 8px;
+    }
+    #shayari.swap { opacity: 0.3; }
+
+    /* ═══ Player (bottom) ═══════════════════════════════════════ */
+    #player {
+      position: fixed;
+      bottom: 12px;
+      left: 12px;
+      right: 12px;
+      max-width: 1080px;
+      margin: 0 auto;
+      z-index: 30;
+      background: linear-gradient(135deg, rgba(6,24,46,0.94), rgba(11,37,69,0.96));
+      border: 1px solid rgba(232,163,61,0.35);
+      border-radius: 20px;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow:
+        0 24px 60px rgba(0,0,0,0.6),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    /* Vinyl disc */
+    #disc-wrap {
+      position: relative;
+      flex-shrink: 0;
+      width: 56px; height: 56px;
+    }
+    #disc {
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--hr-red), var(--hr-amber));
+      padding: 2px;
+      animation: spin 8s linear infinite;
+      animation-play-state: paused;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+    }
+    #disc.spinning { animation-play-state: running; }
+    #disc-inner {
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      overflow: hidden;
+      background: var(--hr-ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    #disc-cover {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transform: scale(1.4);
+    }
+    #disc-hole {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--hr-ink);
+      border: 1.5px solid rgba(255,255,255,0.4);
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Track meta */
+    #track-meta {
+      flex: 1;
+      min-width: 0;
+    }
+    .now-badge {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: var(--hr-amber);
+      background: rgba(232,163,61,0.12);
+      padding: 2px 8px;
+      border-radius: 999px;
+      margin-bottom: 4px;
+    }
+    #track-title {
+      font-family: 'Tiro Devanagari Hindi', serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--hr-cream);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.2;
+    }
+    #track-artist {
+      font-size: 12px;
+      color: rgba(237,227,206,0.55);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 2px;
+    }
+
+    /* Transport */
+    #transport {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .t-btn {
+      background: none;
+      border: none;
+      color: rgba(237,227,206,0.7);
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+    .t-btn:hover { background: rgba(255,255,255,0.08); color: var(--hr-cream); }
+    .t-btn:active { transform: scale(0.9); }
+    .t-btn.on { color: var(--hr-amber); }
+
+    #play-btn {
+      background: linear-gradient(135deg, var(--hr-red), #A02818);
+      color: white;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      box-shadow: 0 4px 14px rgba(198,55,31,0.5);
+    }
+    #play-btn:hover { transform: scale(1.06); }
+
+    /* Volume */
+    #vol {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      color: rgba(237,227,206,0.55);
+    }
+    #vol input {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 70px;
+      height: 3px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 2px;
+      cursor: pointer;
+    }
+    #vol input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--hr-amber);
+      cursor: pointer;
+    }
+    #vol input::-moz-range-thumb {
+      width: 12px; height: 12px;
+      border: 0;
+      border-radius: 50%;
+      background: var(--hr-amber);
+    }
+
+    /* Hidden YT mount */
+    #yt-mount {
+      position: fixed;
+      bottom: -400px;
+      opacity: 0;
+      pointer-events: none;
+    }
+    #yt-mount iframe { width: 1px; height: 1px; }
+
+    /* ═══ Settings (playlist picker) ═════════════════════════════ */
+    #settings-btn {
+      background: none;
+      border: none;
+      color: rgba(237,227,206,0.55);
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+    #settings-btn:hover { background: rgba(255,255,255,0.08); color: var(--hr-amber); transform: rotate(30deg); }
+
+    #settings-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    #settings-overlay.show { display: flex; animation: fadeIn 0.25s ease-out; }
+
+    #settings-panel {
+      background: linear-gradient(135deg, rgba(11,37,69,0.98), rgba(6,24,46,0.98));
+      color: var(--hr-cream);
+      max-width: 440px;
+      width: 100%;
+      border: 1px solid rgba(232,163,61,0.35);
+      border-radius: 18px;
+      padding: 26px 28px;
+      font-family: 'Hind', sans-serif;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+      animation: ticketPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    #settings-panel h3 {
+      font-family: 'Tiro Devanagari Hindi', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--hr-amber);
+      margin-bottom: 6px;
+    }
+    #settings-panel .sub {
+      font-size: 12px;
+      color: rgba(237,227,206,0.55);
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+    #settings-panel label {
+      display: block;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(237,227,206,0.6);
+      margin-bottom: 6px;
+    }
+    #settings-panel input {
+      width: 100%;
+      padding: 10px 12px;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(237,227,206,0.15);
+      border-radius: 8px;
+      color: var(--hr-cream);
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    #settings-panel input:focus { border-color: var(--hr-amber); }
+    #settings-panel .hint {
+      font-size: 11px;
+      color: rgba(237,227,206,0.4);
+      margin-top: 6px;
+      font-style: italic;
+    }
+    #settings-panel .current {
+      margin-top: 14px;
+      padding: 10px 12px;
+      background: rgba(232,163,61,0.08);
+      border: 1px solid rgba(232,163,61,0.2);
+      border-radius: 8px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--hr-amber);
+      word-break: break-all;
+    }
+    #settings-panel .current .k {
+      display: block;
+      font-size: 9px;
+      color: rgba(237,227,206,0.5);
+      letter-spacing: 1.5px;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+    #settings-panel .btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 18px;
+    }
+    #settings-panel button {
+      flex: 1;
+      padding: 11px;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Tiro Devanagari Hindi', serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    #settings-save {
+      background: linear-gradient(135deg, var(--hr-red), #A02818);
+      color: white;
+    }
+    #settings-save:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(198,55,31,0.45); }
+    #settings-reset {
+      background: rgba(255,255,255,0.06);
+      color: var(--hr-cream);
+      border: 1px solid rgba(237,227,206,0.15) !important;
+    }
+    #settings-reset:hover { background: rgba(255,255,255,0.12); }
+    #settings-cancel {
+      background: transparent;
+      color: rgba(237,227,206,0.55);
+    }
+    #settings-cancel:hover { color: var(--hr-cream); }
+
+    /* ═══ Ticket ═════════════════════════════════════════════════ */
+    #ticket-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    #ticket-overlay.show { display: flex; animation: fadeIn 0.25s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    #ticket {
+      background: #FBF3DE;
+      color: #1a1a1a;
+      max-width: 340px;
+      width: 100%;
+      border-radius: 12px;
+      padding: 24px 28px 22px;
+      font-family: 'Tiro Devanagari Hindi', serif;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+      position: relative;
+      transform: rotate(-1.5deg);
+      animation: ticketPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      background-image:
+        repeating-linear-gradient(0deg, transparent 0 22px, rgba(11,37,69,0.04) 22px 23px);
+    }
+    @keyframes ticketPop {
+      from { transform: scale(0.7) rotate(-8deg); opacity: 0; }
+      to   { transform: scale(1) rotate(-1.5deg); opacity: 1; }
+    }
+    #ticket::before, #ticket::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 20px; height: 20px;
+      background: rgba(0,0,0,0.75);
+      border-radius: 50%;
+      transform: translateY(-50%);
+    }
+    #ticket::before { left: -10px; }
+    #ticket::after  { right: -10px; }
+
+    #ticket .head {
+      text-align: center;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--hr-navy);
+      letter-spacing: 0.02em;
+    }
+    #ticket .sub {
+      text-align: center;
+      font-size: 11px;
+      color: #666;
+      padding: 6px 0 12px;
+      border-bottom: 1.5px dashed #C4A97B;
+      margin-bottom: 12px;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 1px;
+    }
+    #ticket .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 5px 0;
+      font-size: 13px;
+      gap: 12px;
+    }
+    #ticket .row .k { color: #6B5A3F; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; font-family: 'DM Mono', monospace; }
+    #ticket .row .v { color: #1a1a1a; font-weight: 700; text-align: right; }
+    #ticket .fare {
+      text-align: center;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--hr-red);
+      margin: 14px 0 4px;
+      padding-top: 14px;
+      border-top: 1.5px dashed #C4A97B;
+      font-family: 'Rozha One', serif;
+    }
+    #ticket .stamp {
+      position: absolute;
+      top: 20px; right: 22px;
+      width: 58px; height: 58px;
+      border-radius: 50%;
+      border: 2.5px solid var(--hr-red);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--hr-red);
+      font-size: 9px;
+      font-weight: 700;
+      line-height: 1.1;
+      text-align: center;
+      transform: rotate(-15deg);
+      opacity: 0.65;
+      letter-spacing: 0.5px;
+    }
+    #ticket-close {
+      display: block;
+      width: 100%;
+      margin-top: 14px;
+      padding: 11px;
+      background: var(--hr-navy);
+      color: var(--hr-cream);
+      border: none;
+      border-radius: 8px;
+      font-family: 'Tiro Devanagari Hindi', serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    #ticket-close:hover { background: var(--hr-blue); }
+
+    /* ═══ Hint ═══════════════════════════════════════════════════ */
+    #hint {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      color: rgba(237,227,206,0.35);
+      z-index: 25;
+      pointer-events: none;
+      transition: opacity 0.8s;
+      white-space: nowrap;
+    }
+    #hint .k {
+      color: var(--hr-amber);
+      background: rgba(0,0,0,0.4);
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin: 0 2px;
+    }
+    #hint.gone { opacity: 0; }
+
+    /* ═══ Mobile ═════════════════════════════════════════════════ */
+    @media (max-width: 720px) {
+      body { padding-bottom: 140px; }
+      header { padding: 10px 12px; }
+      .pill-live .name { display: none; }
+      .pill-live .sep { display: none; }
+      .pill-route { padding: 5px 10px; }
+      .pill-route .txt { font-size: 12px; }
+      main { padding: 6px 12px 20px; }
+      #stage { margin-top: 10px; }
+      #road { margin-left: 12px; margin-right: 12px; }
+      .btn-horn { padding: 12px 20px; font-size: 16px; }
+      .btn-horn .kbd { display: none; }
+      .btn-bell { padding: 10px 16px; font-size: 14px; }
+      #shayari { margin: 20px 12px 0; padding: 14px 18px; }
+      #vol { display: none; }
+      #player { left: 8px; right: 8px; padding: 10px 12px; gap: 10px; border-radius: 16px; }
+      #disc-wrap { width: 48px; height: 48px; }
+      #track-title { font-size: 13px; }
+      #track-artist { font-size: 11px; }
+      #play-btn { width: 40px; height: 40px; }
+      #hint { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- Ambient stars -->
+<div id="stars"></div>
+
+<!-- Horn flash + toast -->
+<div id="horn-flash"></div>
+<div id="horn-toast">📯 पों पों!</div>
+
+<!-- ═══ Header ═══════════════════════════════════════════════════ -->
+<header>
+  <div class="pill pill-live">
+    <span class="dot"></span>
+    <span class="name">रोडवेज़ चालू</span>
+    <span class="sep">•</span>
+    <span class="plate">HR-47 BUS 001</span>
+  </div>
+  <div class="pill pill-route">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/>
+      <path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/>
+      <circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/>
+    </svg>
+    <span class="txt">रूट 47 · दिल्ली 🔴 हिसार via रोहतक</span>
+  </div>
+</header>
+
+<!-- ═══ Main ═════════════════════════════════════════════════════ -->
+<main>
+  <h1 class="hero-title">हरियाणा रोडवेज़</h1>
+  <div class="hero-sub">
+    <span>NH-9 पर एक नीली बस</span>
+    <span class="em">•</span>
+    <span>खिड़की वाली सीट खाली है</span>
+    <span>🚌</span>
+  </div>
+
+  <!-- Bus + Road stage -->
+  <div id="stage">
+    <div id="headlight-glow"></div>
+
+    <!-- Destination board -->
+    <div id="dest-board">
+      <span>दिल्ली</span>
+      <span class="marker">🔴</span>
+      <span>हिसार</span>
+    </div>
+
+    <!-- Bus SVG (Haryana Roadways: blue top, cream body, red stripe) -->
+    <svg id="bus" viewBox="0 0 900 400" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="topGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%"  stop-color="#2A6BB8"/>
+          <stop offset="60%" stop-color="#1B4B8F"/>
+          <stop offset="100%" stop-color="#0B2545"/>
+        </linearGradient>
+        <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%"  stop-color="#F5EBD3"/>
+          <stop offset="55%" stop-color="#EDE3CE"/>
+          <stop offset="100%" stop-color="#C8B99A"/>
+        </linearGradient>
+        <linearGradient id="glassGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%"  stop-color="rgba(186,230,253,0.85)"/>
+          <stop offset="100%" stop-color="rgba(56,130,190,0.35)"/>
+        </linearGradient>
+        <linearGradient id="chromeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"  stop-color="#e2e8f0"/>
+          <stop offset="50%" stop-color="#ffffff"/>
+          <stop offset="100%" stop-color="#94a3b8"/>
+        </linearGradient>
+      </defs>
+
+      <!-- Luggage rack + bags on top -->
+      <g id="rack">
+        <rect x="180" y="48" width="460" height="6"  fill="#64748b" rx="2"/>
+        <rect x="180" y="38" width="460" height="4"  fill="#475569" rx="2"/>
+        <line x1="200" y1="38" x2="200" y2="54" stroke="#94a3b8" stroke-width="3"/>
+        <line x1="300" y1="38" x2="300" y2="54" stroke="#94a3b8" stroke-width="3"/>
+        <line x1="400" y1="38" x2="400" y2="54" stroke="#94a3b8" stroke-width="3"/>
+        <line x1="500" y1="38" x2="500" y2="54" stroke="#94a3b8" stroke-width="3"/>
+        <line x1="600" y1="38" x2="600" y2="54" stroke="#94a3b8" stroke-width="3"/>
+        <!-- Trunks -->
+        <rect x="220" y="18" width="70" height="22" fill="#78350f" rx="3"/>
+        <rect x="225" y="22" width="60" height="14" fill="#a16207" rx="2"/>
+        <!-- Tarp cover (green) -->
+        <path d="M 310 40 C 310 20, 390 15, 410 40 Z" fill="#15803d"/>
+        <path d="M 320 38 Q 360 22 400 38" stroke="#166534" stroke-width="2" fill="none"/>
+        <line x1="330" y1="22" x2="330" y2="40" stroke="#fef08a" stroke-width="1.5"/>
+        <line x1="370" y1="20" x2="370" y2="40" stroke="#fef08a" stroke-width="1.5"/>
+        <!-- Box -->
+        <rect x="430" y="24" width="85" height="18" fill="#475569" rx="2"/>
+        <rect x="440" y="26" width="65" height="14" fill="#64748b" rx="1"/>
+        <!-- Spare tire -->
+        <ellipse cx="570" cy="34" rx="30" ry="10" fill="#1e293b" stroke="#0f172a" stroke-width="3"/>
+        <ellipse cx="570" cy="34" rx="14" ry="4"  fill="#64748b"/>
+      </g>
+
+      <!-- Bus body (main shape) -->
+      <path d="M 120 290 L 120 110 Q 120 54, 170 54 L 700 54 Q 750 54, 765 80 Q 780 100, 785 140 L 790 290 Z"
+            fill="url(#topGrad)" stroke="#0B2545" stroke-width="4"/>
+
+      <!-- Cream body band (middle 40%) -->
+      <path d="M 120 165 L 787 165 L 789 250 L 120 250 Z" fill="url(#bodyGrad)" stroke="#8B7355" stroke-width="1"/>
+
+      <!-- Red stripe -->
+      <rect x="120" y="245" width="670" height="8" fill="#C6371F"/>
+      <rect x="120" y="163" width="670" height="4" fill="#C6371F"/>
+
+      <!-- HR logo circle -->
+      <g transform="translate(425, 208)">
+        <circle cx="0" cy="0" r="18" fill="#0B2545" stroke="#E8A33D" stroke-width="2"/>
+        <circle cx="0" cy="0" r="13" fill="#EDE3CE"/>
+        <text x="0" y="4" fill="#0B2545" font-size="10" font-weight="bold"
+              text-anchor="middle" font-family="Arial, sans-serif">HR</text>
+      </g>
+
+      <!-- Number plates -->
+      <rect x="130" y="200" width="62" height="18" fill="#FDE047" stroke="#1e293b" stroke-width="1" rx="2"/>
+      <text x="161" y="213" fill="#0f172a" font-size="9" font-weight="bold"
+            text-anchor="middle" font-family="Arial, sans-serif">HR-47 BUS 001</text>
+      <rect x="715" y="200" width="62" height="18" fill="#FDE047" stroke="#1e293b" stroke-width="1" rx="2"/>
+      <text x="746" y="213" fill="#0f172a" font-size="9" font-weight="bold"
+            text-anchor="middle" font-family="Tiro Devanagari Hindi, serif">एच.आर.-४७</text>
+
+      <!-- Highlight lines on body -->
+      <line x1="120" y1="130" x2="782" y2="130" stroke="rgba(255,255,255,0.18)" stroke-width="2"/>
+      <line x1="120" y1="275" x2="789" y2="275" stroke="rgba(0,0,0,0.25)" stroke-width="2"/>
+
+      <!-- Window strip (top row - dark backdrop) -->
+      <rect x="150" y="70" width="615" height="60" fill="#0B2545" rx="6"/>
+      <!-- Individual windows -->
+      <rect x="160" y="74" width="60" height="52" fill="url(#glassGrad)" rx="4"/>
+      <rect x="230" y="74" width="65" height="52" fill="url(#glassGrad)" rx="4"/>
+      <rect x="305" y="74" width="65" height="52" fill="url(#glassGrad)" rx="4"/>
+      <rect x="380" y="74" width="65" height="52" fill="url(#glassGrad)" rx="4"/>
+      <rect x="455" y="74" width="65" height="52" fill="url(#glassGrad)" rx="4"/>
+      <rect x="530" y="74" width="65" height="52" fill="url(#glassGrad)" rx="4"/>
+
+      <!-- Passenger silhouettes in some windows -->
+      <ellipse cx="190" cy="112" rx="14" ry="12" fill="rgba(0,0,0,0.35)"/>
+      <ellipse cx="337" cy="112" rx="13" ry="11" fill="rgba(0,0,0,0.3)"/>
+      <ellipse cx="487" cy="112" rx="14" ry="12" fill="rgba(0,0,0,0.35)"/>
+      <ellipse cx="562" cy="112" rx="13" ry="11" fill="rgba(0,0,0,0.3)"/>
+
+      <!-- Yellow curtains in a couple windows -->
+      <path d="M 230 74 Q 245 84, 260 74 Q 275 84, 290 74 L 290 80 L 230 80 Z" fill="#F59E0B" opacity="0.75"/>
+      <path d="M 380 74 Q 395 84, 410 74 Q 425 84, 440 74 L 440 80 L 380 80 Z" fill="#F59E0B" opacity="0.75"/>
+
+      <!-- Door (right side) -->
+      <rect x="605" y="74" width="60" height="180" fill="#0B2545" stroke="#475569" stroke-width="2" rx="3"/>
+      <rect x="610" y="78"  width="50" height="48" fill="url(#glassGrad)" rx="3"/>
+      <rect x="610" y="132" width="50" height="60" fill="url(#glassGrad)" rx="3"/>
+      <rect x="652" y="165" width="4" height="24" fill="url(#chromeGrad)" rx="1"/>
+
+      <!-- Windshield (front, right side of bus - driver) -->
+      <path d="M 675 74 L 750 74 Q 765 85, 770 120 L 675 120 Z" fill="url(#glassGrad)"/>
+      <!-- Driver silhouette -->
+      <circle cx="710" cy="98" r="10" fill="#334155"/>
+      <path d="M 698 120 C 700 108, 720 108, 722 120 Z" fill="#334155"/>
+      <!-- Windshield wiper -->
+      <ellipse cx="732" cy="110" rx="12" ry="4" fill="#020617" transform="rotate(-30 732 110)"/>
+
+      <!-- Mirror -->
+      <path d="M 760 110 L 785 105 L 785 130 Z" fill="#475569"/>
+      <rect x="782" y="100" width="8" height="35" fill="url(#chromeGrad)" rx="2"/>
+
+      <!-- Rear light bank -->
+      <rect x="122" y="210" width="14" height="36" fill="#0B2545" rx="2"/>
+      <rect x="124" y="214" width="10" height="6" fill="#EF4444" opacity="0.85" rx="1"/>
+      <rect x="124" y="222" width="10" height="6" fill="#F59E0B" opacity="0.85" rx="1"/>
+      <rect x="124" y="230" width="10" height="6" fill="#EF4444" opacity="0.85" rx="1"/>
+
+      <!-- Front headlight (bright, glowing) -->
+      <circle id="hl" cx="778" cy="265" r="12" fill="#FEF08A" stroke="#F59E0B" stroke-width="3"/>
+      <circle cx="778" cy="265" r="7" fill="#FFFFFF"/>
+      <!-- Grill -->
+      <rect x="765" y="210" width="22" height="40" fill="#0B2545" rx="2"/>
+      <line x1="765" y1="218" x2="787" y2="218" stroke="#E8A33D" stroke-width="2"/>
+      <line x1="765" y1="226" x2="787" y2="226" stroke="#E8A33D" stroke-width="2"/>
+      <line x1="765" y1="234" x2="787" y2="234" stroke="#E8A33D" stroke-width="2"/>
+      <line x1="765" y1="242" x2="787" y2="242" stroke="#E8A33D" stroke-width="2"/>
+
+      <!-- Wheel wells (dark) -->
+      <path d="M 220 290 A 45 45 0 0 1 310 290 Z" fill="#050508"/>
+      <path d="M 620 290 A 45 45 0 0 1 710 290 Z" fill="#050508"/>
+
+      <!-- Rear wheel -->
+      <g transform="translate(265, 290)">
+        <circle r="42" fill="#1e293b" stroke="#050508" stroke-width="5"/>
+        <circle r="26" fill="url(#chromeGrad)"/>
+        <g style="transform-origin:0 0;animation:spin 1.2s linear infinite">
+          <line x1="-22" y1="0" x2="22" y2="0" stroke="#475569" stroke-width="3"/>
+          <line x1="0" y1="-22" x2="0" y2="22" stroke="#475569" stroke-width="3"/>
+          <line x1="-15" y1="-15" x2="15" y2="15" stroke="#334155" stroke-width="2"/>
+          <line x1="15" y1="-15" x2="-15" y2="15" stroke="#334155" stroke-width="2"/>
+        </g>
+        <circle r="8" fill="#0F172A"/>
+      </g>
+
+      <!-- Front wheel -->
+      <g transform="translate(665, 290)">
+        <circle r="42" fill="#1e293b" stroke="#050508" stroke-width="5"/>
+        <circle r="26" fill="url(#chromeGrad)"/>
+        <g style="transform-origin:0 0;animation:spin 1.2s linear infinite">
+          <line x1="-22" y1="0" x2="22" y2="0" stroke="#475569" stroke-width="3"/>
+          <line x1="0" y1="-22" x2="0" y2="22" stroke="#475569" stroke-width="3"/>
+          <line x1="-15" y1="-15" x2="15" y2="15" stroke="#334155" stroke-width="2"/>
+          <line x1="15" y1="-15" x2="-15" y2="15" stroke="#334155" stroke-width="2"/>
+        </g>
+        <circle r="8" fill="#0F172A"/>
+      </g>
+
+      <!-- Mud flaps -->
+      <rect x="210" y="295" width="12" height="25" fill="#020617"/>
+      <rect x="710" y="295" width="12" height="25" fill="#020617"/>
+
+      <!-- Exhaust smoke -->
+      <g>
+        <rect x="110" y="290" width="15" height="6" fill="#475569"/>
+        <circle cx="95" cy="288" r="8"  fill="#94a3b8" opacity="0.5">
+          <animate attributeName="cy" values="288;278;288" dur="2s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.5;0.1;0.5" dur="2s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="75" cy="282" r="12" fill="#64748b" opacity="0.35">
+          <animate attributeName="cy" values="282;265;282" dur="2.5s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.35;0.05;0.35" dur="2.5s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+
+      <!-- HARYANA ROADWAYS text on body -->
+      <text x="450" y="235" fill="rgba(11,37,69,0.6)" font-size="10"
+            text-anchor="middle" font-family="Arial, sans-serif" letter-spacing="2.5">HARYANA ROADWAYS</text>
+    </svg>
+  </div>
+
+  <!-- Road strip -->
+  <div id="road">
+    <div id="road-dashes">
+      <div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div>
+      <div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div>
+      <div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div>
+      <div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div>
+      <div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div>
+    </div>
+  </div>
+
+  <!-- Horn + Bell -->
+  <div class="stage-controls">
+    <button class="btn-horn" id="horn-btn">
+      <span class="ping"></span>
+      <span>हॉर्न बजाओ!</span>
+      <span class="kbd">H / SPACE</span>
+    </button>
+    <button class="btn-light on" id="light-btn" title="हेडलाइट टॉगल करो">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/>
+        <path d="M9 18h6"/>
+        <path d="M10 22h4"/>
+      </svg>
+      <span id="light-label">लाइट चालू</span>
+    </button>
+    <button class="btn-bell" id="bell-btn">
+      🎫 <span>टिकट लो</span>
+    </button>
+  </div>
+
+  <!-- Shayari (signature 3) -->
+  <div id="shayari">
+    <div class="quote-mark">“</div>
+    <div class="text" id="shayari-text">सफ़र खूबसूरत है मंज़िल से भी</div>
+    <div class="attr" id="shayari-attr">— रोडवेज़ की एक शाम</div>
+  </div>
+</main>
+
+<!-- Hint -->
+<div id="hint">
+  <span class="k">H</span> हॉर्न ·
+  <span class="k">L</span> लाइट ·
+  <span class="k">SPACE</span> Play ·
+  <span class="k">←</span> <span class="k">→</span> गाने ·
+  <span class="k">T</span> टिकट
+</div>
+
+<!-- ═══ Player ═══════════════════════════════════════════════════ -->
+<div id="player">
+  <div id="disc-wrap">
+    <div id="disc">
+      <div id="disc-inner">
+        <img id="disc-cover" alt="" src="">
+        <div id="disc-hole"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="track-meta">
+    <div class="now-badge">रोडवेज़ रेडियो</div>
+    <div id="track-title">लोड हो रहा है…</div>
+    <div id="track-artist">बस-चालक की प्लेलिस्ट</div>
+  </div>
+
+  <div id="transport">
+    <button class="t-btn" id="prev-btn" title="पिछला · ←" aria-label="पिछला">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+    </button>
+    <button class="t-btn" id="play-btn" title="Play · Space" aria-label="चलाओ">
+      <svg id="play-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      <svg id="pause-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M7 5h4v14H7zm6 0h4v14h-4z"/></svg>
+    </button>
+    <button class="t-btn" id="next-btn" title="अगला · →" aria-label="अगला">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 6h2v12h-2zm-2 6L5.5 6v12z"/></svg>
+    </button>
+  </div>
+
+  <div id="vol">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/>
+      <path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/>
+    </svg>
+    <input id="vol-slider" type="range" min="0" max="100" value="80">
+  </div>
+
+  <button id="settings-btn" title="प्लेलिस्ट बदलो" aria-label="Settings">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+      <circle cx="12" cy="12" r="3"/>
+    </svg>
+  </button>
+</div>
+
+<!-- Settings overlay -->
+<div id="settings-overlay">
+  <div id="settings-panel">
+    <h3>🎵 प्लेलिस्ट बदलो</h3>
+    <p class="sub">
+      कोई भी YouTube playlist का link या ID डालो। बस चलती रहेगी उसी गाने पर 🚌
+    </p>
+
+    <label for="playlist-input">YouTube Playlist URL या ID</label>
+    <input id="playlist-input" type="text" placeholder="https://youtube.com/playlist?list=PL..." autocomplete="off" spellcheck="false">
+    <div class="hint">
+      Example: <code>PLeatb7hupNV_AWUl_7ttbsKeCQh8tF5N4</code>
+    </div>
+
+    <div class="current">
+      <span class="k">अभी चल रही है</span>
+      <span id="current-playlist-id">—</span>
+    </div>
+
+    <div class="btn-row">
+      <button id="settings-cancel">रद्द करो</button>
+      <button id="settings-reset">डिफ़ॉल्ट</button>
+      <button id="settings-save">बदलो 🚌</button>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden YT mount -->
+<div id="yt-mount"></div>
+
+<!-- Ticket overlay -->
+<div id="ticket-overlay">
+  <div id="ticket">
+    <div class="stamp">हरियाणा<br>रोडवेज़<br>✓</div>
+    <div class="head">हरियाणा रोडवेज़</div>
+    <div class="sub">TICKET # <span id="ticket-serial">HR47-000</span></div>
+    <div class="row"><span class="k">Route</span> <span class="v">47 · NH-9</span></div>
+    <div class="row"><span class="k">From</span>  <span class="v">दिल्ली ISBT</span></div>
+    <div class="row"><span class="k">To</span>    <span class="v">हिसार बस-अड्डा</span></div>
+    <div class="row"><span class="k">Seat</span>  <span class="v">२३ · खिड़की</span></div>
+    <div class="row"><span class="k">Date</span>  <span class="v" id="ticket-date">—</span></div>
+    <div class="row"><span class="k">Time</span>  <span class="v" id="ticket-time">—</span></div>
+    <div class="row"><span class="k">Song</span>  <span class="v" id="ticket-song" style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px;">—</span></div>
+    <div class="fare">₹ 47</div>
+    <button id="ticket-close">ठीक है, बैठ जाओ 🚌</button>
+  </div>
+</div>
+
+<!-- ═══ JavaScript ═══════════════════════════════════════════════ -->
+<script>
+// ──────────────────────────────────────────────────────────────────
+// Playlist: default + user override stored in localStorage
+// ──────────────────────────────────────────────────────────────────
+const DEFAULT_PLAYLIST_ID = 'PLeatb7hupNV_AWUl_7ttbsKeCQh8tF5N4';
+const LS_KEY = 'lalapari.playlist';
+
+// Extract playlist ID from either a full URL or a raw ID
+function parsePlaylistId(input) {
+  if (!input) return null;
+  input = input.trim();
+  // Full URL — look for list= param
+  const m = input.match(/[?&]list=([A-Za-z0-9_-]+)/);
+  if (m) return m[1];
+  // Raw ID (starts with PL, OLAK5uy_, RD, etc.)
+  if (/^[A-Za-z0-9_-]{13,}$/.test(input)) return input;
+  return null;
+}
+
+function getPlaylistId() {
+  try {
+    return localStorage.getItem(LS_KEY) || DEFAULT_PLAYLIST_ID;
+  } catch (e) {
+    return DEFAULT_PLAYLIST_ID;
+  }
+}
+
+let PLAYLIST_ID = getPlaylistId();
+
+// ──────────────────────────────────────────────────────────────────
+// Hindi shayaris — rotate on every track change
+// ──────────────────────────────────────────────────────────────────
+const SHAYARIS = [
+  { t: 'सफ़र खूबसूरत है मंज़िल से भी',           a: 'रोडवेज़ की एक शाम' },
+  { t: 'खिड़की खोलो, हवा को अंदर आने दो…',       a: 'दिल्ली से हिसार' },
+  { t: 'बस चली, और वक़्त थम गया',              a: 'NH-9 डायरी' },
+  { t: 'पीछे की सीट पर, कोई पुराना गाना बज रहा है', a: 'रात २ बजे' },
+  { t: 'कंडक्टर की सीटी, और चाय की तलब',        a: 'रोहतक बस-स्टैंड' },
+  { t: 'रास्ते बदलते हैं, गाने वही रहते हैं',    a: 'बस-चालक की प्लेलिस्ट' },
+  { t: 'लम्बे सफ़र में, वक़्त गुज़र जाता है — यादें रह जाती हैं', a: 'खिड़की वाली सीट' },
+  { t: 'बारिश हो या धूप, ये बस चलती रहेगी',      a: 'हरियाणा रोडवेज़' },
+  { t: 'हॉर्न बजा, रास्ता खाली कर',              a: 'हाईवे का उसूल' },
+  { t: 'गाँव पीछे छूट गया, गाना अभी बाकी है',   a: 'सफ़रनामा' },
+  { t: 'एक चाय, एक बीड़ी, एक गाना — बस!',       a: 'दो घंटे का ब्रेक' },
+  { t: 'रात, सड़क, और एक पुराना कैसेट',         a: '1998 का मूड' },
+];
+
+// ──────────────────────────────────────────────────────────────────
+// State
+// ──────────────────────────────────────────────────────────────────
+let ytPlayer = null;
+let ytReady  = false;
+let isPlaying = false;
+let currentVideoId = null;
+let volume = 80;
+let shayariIdx = 0;
+let ridersCount = 12 + Math.floor(Math.random() * 20);
+
+// ──────────────────────────────────────────────────────────────────
+// YouTube IFrame API — load with playlist
+// ──────────────────────────────────────────────────────────────────
+window.onYouTubeIframeAPIReady = function () {
+  ytPlayer = new YT.Player('yt-frame', {
+    height: '1',
+    width:  '1',
+    playerVars: {
+      listType: 'playlist',
+      list:     PLAYLIST_ID,
+      autoplay: 0,
+      controls: 0,
+      rel:      0,
+      modestbranding: 1,
+      iv_load_policy: 3,
+      enablejsapi: 1,
+      origin: location.origin,
+    },
+    events: {
+      onReady:       onYtReady,
+      onStateChange: onYtStateChange,
+    }
+  });
+};
+
+// Inject the YT iframe container + API script
+(function () {
+  const el = document.createElement('div');
+  el.id = 'yt-frame';
+  document.getElementById('yt-mount').appendChild(el);
+  const s = document.createElement('script');
+  s.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(s);
+})();
+
+function onYtReady(e) {
+  ytReady = true;
+  e.target.setVolume(volume);
+  e.target.setShuffle(true);
+  // First video info available now
+  setTimeout(refreshTrack, 400);
+}
+
+function onYtStateChange(e) {
+  const S = YT.PlayerState;
+  if (e.data === S.PLAYING) {
+    isPlaying = true;
+    updatePlayUI();
+    refreshTrack();
+    document.body.classList.remove('stopped');
+  } else if (e.data === S.PAUSED) {
+    isPlaying = false;
+    updatePlayUI();
+    document.body.classList.add('stopped');
+  } else if (e.data === S.ENDED) {
+    isPlaying = false;
+    updatePlayUI();
+  } else if (e.data === S.CUED || e.data === S.BUFFERING) {
+    refreshTrack();
+  }
+}
+
+function refreshTrack() {
+  if (!ytReady) return;
+  try {
+    const data = ytPlayer.getVideoData();
+    if (!data || !data.video_id) return;
+    if (data.video_id === currentVideoId) return;
+    currentVideoId = data.video_id;
+    const title  = data.title  || 'चालू गाना';
+    const artist = data.author || 'रोडवेज़ रेडियो';
+    document.getElementById('track-title').textContent  = title;
+    document.getElementById('track-artist').textContent = artist.replace(/ - Topic$/, '');
+    document.getElementById('disc-cover').src = `https://i.ytimg.com/vi/${data.video_id}/hqdefault.jpg`;
+    document.getElementById('ticket-song').textContent  = title;
+    swapShayari();
+  } catch (err) { /* silent */ }
+}
+
+function updatePlayUI() {
+  document.getElementById('play-icon').style.display  = isPlaying ? 'none'  : 'block';
+  document.getElementById('pause-icon').style.display = isPlaying ? 'block' : 'none';
+  document.getElementById('disc').classList.toggle('spinning', isPlaying);
+  document.body.classList.toggle('stopped', !isPlaying);
+}
+
+// ──────────────────────────────────────────────────────────────────
+// Transport
+// ──────────────────────────────────────────────────────────────────
+document.getElementById('play-btn').addEventListener('click', () => {
+  if (!ytReady) return;
+  if (isPlaying) ytPlayer.pauseVideo();
+  else           ytPlayer.playVideo();
+});
+document.getElementById('next-btn').addEventListener('click', () => {
+  if (!ytReady) return;
+  ytPlayer.nextVideo();
+  ringBell();
+});
+document.getElementById('prev-btn').addEventListener('click', () => {
+  if (!ytReady) return;
+  ytPlayer.previousVideo();
+});
+document.getElementById('vol-slider').addEventListener('input', function () {
+  volume = +this.value;
+  if (ytReady) ytPlayer.setVolume(volume);
+});
+
+// ──────────────────────────────────────────────────────────────────
+// Signature 1: Horn (button + H key + Space plays music)
+// ──────────────────────────────────────────────────────────────────
+const HORN_MSGS = ['📯 पों पों!', '🚌 हट जा भाई!', '📯 पीं पीं!', '🚌 साइड दे!', '📯 बजाओ रे!'];
+
+function blowHorn() {
+  const flash = document.getElementById('horn-flash');
+  const toast = document.getElementById('horn-toast');
+  toast.textContent = HORN_MSGS[Math.floor(Math.random() * HORN_MSGS.length)];
+  flash.classList.add('on');
+  toast.classList.add('show');
+  document.body.classList.add('horning');
+  setTimeout(() => flash.classList.remove('on'), 120);
+  setTimeout(() => document.body.classList.remove('horning'), 350);
+  setTimeout(() => toast.classList.remove('show'), 1400);
+  playHornSound();
+}
+
+function playHornSound() {
+  try {
+    const ctx  = new (window.AudioContext || window.webkitAudioContext)();
+    const osc1 = ctx.createOscillator();
+    const osc2 = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc1.type = 'sawtooth'; osc2.type = 'square';
+    osc1.frequency.setValueAtTime(230, ctx.currentTime);
+    osc2.frequency.setValueAtTime(115, ctx.currentTime);
+    osc1.frequency.exponentialRampToValueAtTime(180, ctx.currentTime + 0.4);
+    osc2.frequency.exponentialRampToValueAtTime(90,  ctx.currentTime + 0.4);
+    gain.gain.setValueAtTime(0.22, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
+    osc1.connect(gain); osc2.connect(gain); gain.connect(ctx.destination);
+    osc1.start(); osc2.start();
+    osc1.stop(ctx.currentTime + 0.45);
+    osc2.stop(ctx.currentTime + 0.45);
+  } catch(e) {}
+}
+
+document.getElementById('horn-btn').addEventListener('click', blowHorn);
+
+// ──────────────────────────────────────────────────────────────────
+// Signature 2: Conductor Bell + Ticket
+// ──────────────────────────────────────────────────────────────────
+function ringBell() {
+  try {
+    const ctx  = new (window.AudioContext || window.webkitAudioContext)();
+    const osc  = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(1100, ctx.currentTime);
+    osc.frequency.setValueAtTime(900,  ctx.currentTime + 0.09);
+    osc.frequency.setValueAtTime(1100, ctx.currentTime + 0.18);
+    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(); osc.stop(ctx.currentTime + 0.5);
+  } catch(e) {}
+}
+
+function showTicket() {
+  const d = new Date();
+  document.getElementById('ticket-date').textContent =
+    d.toLocaleDateString('hi-IN', { day:'numeric', month:'long', year:'numeric' });
+  document.getElementById('ticket-time').textContent =
+    d.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit', hour12:true });
+  document.getElementById('ticket-serial').textContent =
+    'HR47-' + Math.floor(1000 + Math.random() * 8999);
+  document.getElementById('ticket-overlay').classList.add('show');
+  ringBell();
+}
+function hideTicket() {
+  document.getElementById('ticket-overlay').classList.remove('show');
+}
+// ──────────────────────────────────────────────────────────────────
+// Headlight toggle
+// ──────────────────────────────────────────────────────────────────
+let lightsOn = true;
+const lightBtn   = document.getElementById('light-btn');
+const lightLabel = document.getElementById('light-label');
+const hlBulb     = document.getElementById('hl');
+
+function toggleLights() {
+  lightsOn = !lightsOn;
+  document.body.classList.toggle('lights-off', !lightsOn);
+  lightBtn.classList.toggle('on', lightsOn);
+  lightLabel.textContent = lightsOn ? 'लाइट चालू' : 'लाइट बंद';
+  // Dim the headlight bulb on the bus SVG too
+  if (hlBulb) hlBulb.setAttribute('fill', lightsOn ? '#FEF08A' : '#3F3F1A');
+}
+lightBtn.addEventListener('click', toggleLights);
+
+document.getElementById('bell-btn').addEventListener('click', showTicket);
+document.getElementById('ticket-close').addEventListener('click', hideTicket);
+document.getElementById('ticket-overlay').addEventListener('click', (e) => {
+  if (e.target.id === 'ticket-overlay') hideTicket();
+});
+
+// ──────────────────────────────────────────────────────────────────
+// Signature 3: Shayari swap per song
+// ──────────────────────────────────────────────────────────────────
+function swapShayari() {
+  const el = document.getElementById('shayari');
+  el.classList.add('swap');
+  setTimeout(() => {
+    shayariIdx = (shayariIdx + 1) % SHAYARIS.length;
+    const s = SHAYARIS[shayariIdx];
+    document.getElementById('shayari-text').textContent = s.t;
+    document.getElementById('shayari-attr').textContent = '— ' + s.a;
+    el.classList.remove('swap');
+  }, 300);
+}
+
+// ──────────────────────────────────────────────────────────────────
+// Keyboard shortcuts
+// ──────────────────────────────────────────────────────────────────
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT') return;
+  switch (e.key.toLowerCase()) {
+    case 'h':
+      e.preventDefault();
+      blowHorn();
+      break;
+    case ' ':
+      e.preventDefault();
+      document.getElementById('play-btn').click();
+      break;
+    case 'arrowright':
+      e.preventDefault();
+      document.getElementById('next-btn').click();
+      break;
+    case 'arrowleft':
+      e.preventDefault();
+      document.getElementById('prev-btn').click();
+      break;
+    case 't':
+      e.preventDefault();
+      showTicket();
+      break;
+    case 'l':
+      e.preventDefault();
+      toggleLights();
+      break;
+    case 'escape':
+      hideTicket();
+      closeSettings();
+      break;
+  }
+});
+
+// ──────────────────────────────────────────────────────────────────
+// Settings — change YouTube playlist
+// ──────────────────────────────────────────────────────────────────
+const settingsBtn     = document.getElementById('settings-btn');
+const settingsOverlay = document.getElementById('settings-overlay');
+const settingsCancel  = document.getElementById('settings-cancel');
+const settingsReset   = document.getElementById('settings-reset');
+const settingsSave    = document.getElementById('settings-save');
+const playlistInput   = document.getElementById('playlist-input');
+const currentPidEl    = document.getElementById('current-playlist-id');
+
+function openSettings() {
+  currentPidEl.textContent = PLAYLIST_ID;
+  playlistInput.value = '';
+  playlistInput.placeholder = 'https://youtube.com/playlist?list=' + PLAYLIST_ID;
+  settingsOverlay.classList.add('show');
+  setTimeout(() => playlistInput.focus(), 100);
+}
+function closeSettings() {
+  settingsOverlay.classList.remove('show');
+}
+
+function applyPlaylist(newId) {
+  if (!newId || newId === PLAYLIST_ID) { closeSettings(); return; }
+  PLAYLIST_ID = newId;
+  try { localStorage.setItem(LS_KEY, newId); } catch (e) {}
+  currentVideoId = null;
+  if (ytReady && ytPlayer && ytPlayer.loadPlaylist) {
+    ytPlayer.loadPlaylist({ list: newId, listType: 'playlist', index: 0 });
+    ytPlayer.setShuffle(true);
+    // Force refresh after YT settles
+    setTimeout(refreshTrack, 800);
+  }
+  closeSettings();
+  // Small confirmation via horn toast
+  const toast = document.getElementById('horn-toast');
+  toast.textContent = '🎵 प्लेलिस्ट बदल दी!';
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 1600);
+}
+
+settingsBtn.addEventListener('click', openSettings);
+settingsCancel.addEventListener('click', closeSettings);
+settingsOverlay.addEventListener('click', (e) => {
+  if (e.target === settingsOverlay) closeSettings();
+});
+settingsSave.addEventListener('click', () => {
+  const parsed = parsePlaylistId(playlistInput.value);
+  if (!parsed) {
+    playlistInput.style.borderColor = '#EF4444';
+    playlistInput.placeholder = 'ग़लत link — दुबारा try करो';
+    playlistInput.value = '';
+    setTimeout(() => { playlistInput.style.borderColor = ''; }, 2000);
+    return;
+  }
+  applyPlaylist(parsed);
+});
+settingsReset.addEventListener('click', () => {
+  try { localStorage.removeItem(LS_KEY); } catch (e) {}
+  applyPlaylist(DEFAULT_PLAYLIST_ID);
+});
+playlistInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') settingsSave.click();
+});
+
+// ──────────────────────────────────────────────────────────────────
+// Auto-hide hint
+// ──────────────────────────────────────────────────────────────────
+setTimeout(() => document.getElementById('hint').classList.add('gone'), 8000);
+
+// ──────────────────────────────────────────────────────────────────
+// Initial: pause road when not playing
+// ──────────────────────────────────────────────────────────────────
+document.body.classList.add('stopped');
+</script>
+
+</body>
+</html>
