@@ -1821,28 +1821,57 @@ function playSynthHorn() {
   } catch(e) {}
 }
 
-// Fetch /hornsound/ directory listing and parse audio files
-async function discoverHorns() {
+// Discover horn files.
+//   1) Try /hornsound/index.json — a plain array of filenames. Works on
+//      GitHub Pages, Netlify, any static host. This is the authoritative list.
+//   2) Fall back to directory listing (Python dev server auto-generates it) —
+//      only useful during local development so you don't have to touch the
+//      manifest every time you drop in a new file.
+function nameFromFile(fn) {
+  return decodeURIComponent(fn)
+    .replace(AUDIO_EXT_RE, '')
+    .replace(/[_-]+/g, ' ')
+    .trim();
+}
+
+async function discoverHornsFromManifest() {
   try {
-    const res  = await fetch(HORN_FOLDER, { cache: 'no-store' });
+    const res = await fetch(HORN_FOLDER + 'index.json', { cache: 'no-store' });
+    if (!res.ok) return null;
+    const arr = await res.json();
+    if (!Array.isArray(arr)) return null;
+    return arr
+      .filter(fn => typeof fn === 'string' && AUDIO_EXT_RE.test(fn))
+      .map(fn => ({ name: nameFromFile(fn), url: HORN_FOLDER + fn }));
+  } catch (e) {
+    return null;
+  }
+}
+
+async function discoverHornsFromDirListing() {
+  try {
+    const res = await fetch(HORN_FOLDER, { cache: 'no-store' });
     if (!res.ok) return [];
     const html = await res.text();
+    // Only trust HTML that looks like a Python-style directory index.
+    if (!/Directory listing/i.test(html)) return [];
     const doc  = new DOMParser().parseFromString(html, 'text/html');
     const found = [];
     doc.querySelectorAll('a[href]').forEach(a => {
       const href = a.getAttribute('href');
       if (!href || !AUDIO_EXT_RE.test(href)) return;
-      const url  = HORN_FOLDER + href;
-      const name = decodeURIComponent(href)
-        .replace(AUDIO_EXT_RE, '')
-        .replace(/[_-]+/g, ' ')
-        .trim();
-      found.push({ name, url });
+      found.push({ name: nameFromFile(href), url: HORN_FOLDER + href });
     });
     return found;
   } catch (e) {
     return [];
   }
+}
+
+async function discoverHorns() {
+  const manifest = await discoverHornsFromManifest();
+  if (manifest && manifest.length) return manifest;
+  return await discoverHornsFromDirListing();
 }
 
 function renderHornPicker() {
