@@ -601,6 +601,208 @@
     }
     #horn-flash.on { opacity: 1; }
 
+    /* ═══ Double-tap skip zones ══════════════════════════════════
+       Zones sit at z:1 — above the background grid/stars, but BELOW
+       everything interactive (bus stage z≥1, header z:20, player z:30,
+       modals z:100). So dbl-clicks on empty background trigger a skip;
+       dbl-clicks on the bus/UI/etc pass through and behave normally. */
+    .skip-zone {
+      position: fixed;
+      top: 0; bottom: 0;
+      width: 42%;
+      z-index: 1;
+      background: transparent;
+      cursor: default;
+    }
+    .skip-zone.left  { left: 0; }
+    .skip-zone.right { right: 0; }
+
+    /* Ripple/toast that plays on each skip */
+    .skip-ripple {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle,
+        rgba(232,163,61,0.28) 0%,
+        rgba(232,163,61,0.12) 40%,
+        transparent 72%);
+      pointer-events: none;
+      z-index: 46;
+      opacity: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--hr-cream);
+      font-family: 'Tiro Devanagari Hindi', serif;
+      font-size: 20px;
+      font-weight: 700;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.7);
+    }
+    .skip-ripple.left  { left: 4%; }
+    .skip-ripple.right { right: 4%; }
+    .skip-ripple .num {
+      font-family: 'DM Mono', monospace;
+      font-size: 30px;
+      color: var(--hr-amber);
+      margin-right: 4px;
+    }
+    .skip-ripple.left  .num::before { content: '−'; }
+    .skip-ripple.right .num::before { content: '+'; }
+    .skip-ripple.animate {
+      animation: skipPulse 1s ease-out;
+    }
+    @keyframes skipPulse {
+      0%   { opacity: 0; transform: translateY(-50%) scale(0.7); }
+      25%  { opacity: 1; transform: translateY(-50%) scale(1); }
+      100% { opacity: 0; transform: translateY(-50%) scale(1.35); }
+    }
+
+    /* ═══ Skip-zone onboarding hint (shows every page load) ═════ */
+    #onboarding {
+      position: fixed;
+      inset: 0;
+      z-index: 44;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      /* Translucent dark backdrop so the divider + hints pop against
+         the busy grid/stars/bus scene behind. */
+      background: rgba(3, 8, 22, 0.62);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+    }
+    #onboarding.show { opacity: 1; animation: onboardIn 0.5s ease-out; }
+    @keyframes onboardIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    /* Heading anchored at the top of the divider */
+    #onboarding .divider-head {
+      position: absolute;
+      top: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    #onboarding .divider-head .kicker {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(232,163,61,0.7);
+    }
+    #onboarding .divider-head .title {
+      font-family: 'Tiro Devanagari Hindi', serif;
+      font-size: clamp(20px, 3.2vw, 30px);
+      font-weight: 700;
+      color: var(--hr-amber);
+      text-shadow: 0 2px 14px rgba(0,0,0,0.6);
+      line-height: 1.15;
+    }
+    #onboarding .divider-head .rule {
+      width: 1px;
+      height: 14px;
+      background: var(--hr-amber);
+      opacity: 0.6;
+      margin-top: 4px;
+    }
+
+    /* Dashed vertical divider — starts BELOW the heading, runs to bottom */
+    #onboarding .divider {
+      position: absolute;
+      top: 110px;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      background-image: linear-gradient(to bottom,
+        var(--hr-amber) 50%, transparent 50%);
+      background-size: 2px 12px;
+      background-repeat: repeat-y;
+      opacity: 0.75;
+    }
+
+    @media (max-width: 720px) {
+      #onboarding .divider-head { top: 14px; }
+      #onboarding .divider-head .kicker { font-size: 9px; letter-spacing: 2px; }
+      #onboarding .divider-head .title { font-size: 17px; }
+      #onboarding .divider { top: 90px; }
+    }
+    /* Subtle "left / right" tint on each half to reinforce the split */
+    #onboarding::before,
+    #onboarding::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 50%;
+      pointer-events: none;
+    }
+    #onboarding::before {
+      left: 0;
+      background: linear-gradient(to right, rgba(232,163,61,0.06), transparent);
+    }
+    #onboarding::after {
+      right: 0;
+      background: linear-gradient(to left, rgba(232,163,61,0.06), transparent);
+    }
+    #onboarding .hint-side {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      color: var(--hr-cream);
+      font-family: 'Tiro Devanagari Hindi', serif;
+      text-align: center;
+      padding: 0 24px;
+    }
+    #onboarding .hint-side.left  { left: 6%; }
+    #onboarding .hint-side.right { right: 6%; }
+    #onboarding .hint-icon {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      border: 2px dashed rgba(232,163,61,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      color: var(--hr-amber);
+      background: rgba(11,37,69,0.45);
+      backdrop-filter: blur(8px);
+      animation: pulseIcon 2s ease-in-out infinite;
+    }
+    @keyframes pulseIcon {
+      0%,100% { transform: scale(1); }
+      50%     { transform: scale(1.08); }
+    }
+    #onboarding .hint-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--hr-amber);
+    }
+    #onboarding .hint-sub {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(237,227,206,0.7);
+    }
+    @media (max-width: 720px) {
+      #onboarding .hint-icon { width: 52px; height: 52px; font-size: 22px; }
+      #onboarding .hint-title { font-size: 14px; }
+      #onboarding .hint-sub { font-size: 9px; letter-spacing: 1.5px; }
+    }
+
     /* Horn toast */
     #horn-toast {
       position: fixed;
@@ -1169,7 +1371,7 @@
 
     /* ═══ Mobile ═════════════════════════════════════════════════ */
     @media (max-width: 720px) {
-      body { padding-bottom: 140px; }
+      body { padding-bottom: 200px; }
       header { padding: 10px 12px; }
       .pill-live .name { display: none; }
       .pill-live .sep { display: none; }
@@ -1183,7 +1385,11 @@
       .btn-bell { padding: 10px 16px; font-size: 14px; }
       #shayari { margin: 20px 12px 0; padding: 14px 18px; }
       #vol { display: none; }
-      #player { left: 8px; right: 8px; padding: 10px 12px; gap: 10px; border-radius: 16px; }
+      #player {
+        left: 8px; right: 8px;
+        bottom: max(70px, env(safe-area-inset-bottom, 20px));
+        padding: 10px 12px; gap: 10px; border-radius: 16px;
+      }
       #disc-wrap { width: 48px; height: 48px; }
       #track-title { font-size: 13px; }
       #track-artist { font-size: 11px; }
@@ -1202,6 +1408,32 @@
 <!-- Horn flash + toast -->
 <div id="horn-flash"></div>
 <div id="horn-toast">📯 पों पों!</div>
+
+<!-- Double-tap skip zones + their ripple indicators -->
+<div class="skip-zone left"  id="skip-zone-left"></div>
+<div class="skip-zone right" id="skip-zone-right"></div>
+<div class="skip-ripple left"  id="skip-ripple-left"><span class="num">10</span></div>
+<div class="skip-ripple right" id="skip-ripple-right"><span class="num">10</span></div>
+
+<!-- Onboarding hint (dashed vertical divider) -->
+<div id="onboarding" aria-hidden="true">
+  <div class="divider-head">
+    <div class="kicker">HOW TO USE</div>
+    <div class="title">डबल-टैप से गाना<br>पीछे ← या आगे → करो</div>
+    <div class="rule"></div>
+  </div>
+  <div class="divider"></div>
+  <div class="hint-side left">
+    <div class="hint-icon">« 10</div>
+    <div class="hint-title">पीछे जाओ</div>
+    <div class="hint-sub">DOUBLE-TAP</div>
+  </div>
+  <div class="hint-side right">
+    <div class="hint-icon">10 »</div>
+    <div class="hint-title">आगे जाओ</div>
+    <div class="hint-sub">DOUBLE-TAP</div>
+  </div>
+</div>
 
 <!-- ═══ Header ═══════════════════════════════════════════════════ -->
 <header>
@@ -2164,6 +2396,78 @@ setTimeout(() => document.getElementById('hint').classList.add('gone'), 8000);
 
 // Road keeps rolling by default — atmosphere > realism.
 // (Only pauses when user hits pause mid-song via onYtStateChange.)
+
+// ══════════════════════════════════════════════════════════════════
+// Double-tap skip zones + first-visit onboarding
+// ══════════════════════════════════════════════════════════════════
+const SKIP_SECONDS = 10;
+const DBL_MS       = 320;              // dbl-tap window
+
+function seekBy(delta) {
+  if (!ytReady) return;
+  try {
+    const dur = ytPlayer.getDuration()    || 0;
+    const cur = ytPlayer.getCurrentTime() || 0;
+    let next = cur + delta;
+    if (dur) next = Math.max(0, Math.min(dur - 0.5, next));
+    else     next = Math.max(0, next);
+    ytPlayer.seekTo(next, true);
+  } catch (e) {}
+}
+
+function showSkipRipple(side) {
+  const el = document.getElementById('skip-ripple-' + side);
+  el.classList.remove('animate');
+  // Force reflow so the animation restarts cleanly on rapid taps
+  void el.offsetWidth;
+  el.classList.add('animate');
+}
+
+function skipLeft()  { seekBy(-SKIP_SECONDS); showSkipRipple('left');  dismissOnboarding(); }
+function skipRight() { seekBy( SKIP_SECONDS); showSkipRipple('right'); dismissOnboarding(); }
+
+// Double-tap detection — works for both mouse and touch.
+// We can't just use `dblclick` because iOS Safari on <div>s is flaky;
+// this custom detector is symmetric across devices.
+function attachDoubleTap(el, handler) {
+  let lastTs = 0;
+  const trigger = (e) => {
+    const now = e.timeStamp || Date.now();
+    if (now - lastTs < DBL_MS) {
+      lastTs = 0;
+      handler(e);
+      e.preventDefault();
+    } else {
+      lastTs = now;
+    }
+  };
+  // Prefer pointerdown — one event covers mouse + touch + pen
+  el.addEventListener('pointerdown', trigger);
+}
+
+attachDoubleTap(document.getElementById('skip-zone-left'),  skipLeft);
+attachDoubleTap(document.getElementById('skip-zone-right'), skipRight);
+
+// ── Onboarding hint (shows every page load) ───────────────────────
+let onboardTimer = null;
+function showOnboarding() {
+  const ob = document.getElementById('onboarding');
+  ob.classList.add('show');
+  // Auto-dismiss in 5s, or on any tap outside modals
+  onboardTimer = setTimeout(dismissOnboarding, 5000);
+  const oneClick = () => { dismissOnboarding(); document.removeEventListener('pointerdown', oneClick); };
+  // Small delay so the show animation doesn't get eaten by page-load clicks
+  setTimeout(() => document.addEventListener('pointerdown', oneClick), 400);
+}
+function dismissOnboarding() {
+  const ob = document.getElementById('onboarding');
+  if (!ob.classList.contains('show')) return;
+  ob.classList.remove('show');
+  clearTimeout(onboardTimer);
+}
+
+// Show every page load — small delay so it doesn't feel jumpy on arrival
+setTimeout(showOnboarding, 800);
 </script>
 
 </body>
