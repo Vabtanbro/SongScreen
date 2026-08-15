@@ -57,6 +57,21 @@
       mix-blend-mode: overlay;
     }
 
+    /* Subtle blueprint grid — adds depth without noise */
+    #grid {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(to right,  rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: 44px 44px;
+      /* Radial mask — grid fades to nothing at the edges & center */
+      mask-image: radial-gradient(ellipse 90% 70% at 50% 45%, black 30%, transparent 90%);
+      -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 45%, black 30%, transparent 90%);
+    }
+
     /* Ambient stars */
     #stars {
       position: fixed;
@@ -179,31 +194,45 @@
       filter: drop-shadow(0 6px 20px rgba(232,163,61,0.35));
       letter-spacing: -0.02em;
       margin-top: 6px;
+      position: relative;
+    }
+    /* Etched shadow beneath hero — grounds it */
+    .hero-title::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: -18px;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(232,163,61,0.4), transparent);
     }
 
     .hero-sub {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      margin-top: 12px;
-      padding: 6px 18px;
-      background: rgba(0,0,0,0.45);
-      border: 1px solid rgba(232,163,61,0.25);
+      gap: 10px;
+      margin-top: 20px;
+      padding: 7px 18px;
+      background: rgba(6,24,46,0.55);
+      border: 1px solid rgba(232,163,61,0.22);
       border-radius: 999px;
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       font-family: 'Tiro Devanagari Hindi', serif;
       font-size: 13px;
       color: var(--hr-cream);
       font-weight: 600;
+      letter-spacing: 0.01em;
     }
-    .hero-sub .em { color: var(--hr-amber); }
+    .hero-sub .em { color: var(--hr-amber); opacity: 0.7; }
 
     /* ═══ Bus + Road stage ═══════════════════════════════════════ */
     #stage {
       position: relative;
       margin: 28px auto 0;
       max-width: 940px;
-      aspect-ratio: 16 / 8;
+      aspect-ratio: 16 / 7;
     }
 
     /* Headlight glow behind bus */
@@ -229,7 +258,7 @@
     /* Bus wrapper */
     #bus {
       position: relative;
-      z-index: 2;
+      z-index: 1;
       width: 100%;
       height: 100%;
       display: block;
@@ -253,7 +282,7 @@
       top: 4%;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 3;
+      z-index: 2;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -273,15 +302,32 @@
     /* Road under bus */
     #road {
       position: relative;
-      z-index: 3;
-      margin: -14px auto 0;
-      max-width: 940px;
-      height: 32px;
-      background: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
+      z-index: 1;
+      margin: -40px auto 0;
+      max-width: 900px;
+      height: 34px;
+      background: linear-gradient(180deg, #1c1c1e 0%, #0a0a0c 100%);
       border-top: 2px solid rgba(232,163,61,0.35);
       border-radius: 0 0 14px 14px;
       overflow: hidden;
-      box-shadow: inset 0 3px 12px rgba(0,0,0,0.7);
+      box-shadow:
+        inset 0 3px 12px rgba(0,0,0,0.75),
+        0 20px 40px -12px rgba(0,0,0,0.6);
+    }
+    /* Warm glow beneath the road — ties it to the ambient scene */
+    #road::after {
+      content: '';
+      position: absolute;
+      left: 5%;
+      right: 5%;
+      bottom: -30px;
+      height: 40px;
+      background: radial-gradient(ellipse at center top,
+        rgba(232,163,61,0.18) 0%,
+        rgba(198,55,31,0.08) 40%,
+        transparent 80%);
+      filter: blur(6px);
+      pointer-events: none;
     }
     #road-dashes {
       position: absolute;
@@ -308,6 +354,8 @@
 
     /* ═══ Horn Button (signature 1) ══════════════════════════════ */
     .stage-controls {
+      position: relative;
+      z-index: 20;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -316,31 +364,42 @@
       flex-wrap: wrap;
     }
 
-    .btn-horn {
+    /* Split button: [ 🚌 हॉर्न बजाओ! · H ][ ▾ ] */
+    .horn-group {
       display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 26px;
+      align-items: stretch;
       background: linear-gradient(135deg, var(--hr-red) 0%, #A02818 100%);
-      color: white;
       border: 1px solid rgba(255,255,255,0.15);
       border-radius: 999px;
-      font-family: 'Tiro Devanagari Hindi', serif;
-      font-size: 18px;
-      font-weight: 700;
-      cursor: pointer;
       box-shadow:
         0 10px 30px rgba(198,55,31,0.4),
         inset 0 1px 0 rgba(255,255,255,0.2);
       transition: transform 0.1s, box-shadow 0.2s;
+      overflow: visible;
       position: relative;
-      overflow: hidden;
     }
-    .btn-horn:hover {
+    .horn-group:hover {
       transform: translateY(-2px);
       box-shadow: 0 14px 34px rgba(198,55,31,0.55);
     }
-    .btn-horn:active { transform: translateY(0) scale(0.97); }
+
+    .btn-horn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 22px 14px 26px;
+      background: transparent;
+      color: white;
+      border: none;
+      border-radius: 999px 0 0 999px;
+      font-family: 'Tiro Devanagari Hindi', serif;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-horn:hover { background: rgba(255,255,255,0.06); }
+    .btn-horn:active { transform: scale(0.97); }
     .btn-horn .ping {
       position: relative;
       display: inline-flex;
@@ -371,6 +430,130 @@
       border-radius: 999px;
       font-weight: 500;
       letter-spacing: 1px;
+    }
+
+    /* Divider + chevron slice */
+    .horn-chevron {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px 0 14px;
+      background: transparent;
+      color: rgba(255,255,255,0.85);
+      border: none;
+      border-left: 1px solid rgba(255,255,255,0.22);
+      border-radius: 0 999px 999px 0;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .horn-chevron:hover { background: rgba(255,255,255,0.08); color: var(--hr-amber); }
+    .horn-chevron:active { transform: scale(0.97); }
+    .horn-chevron svg {
+      width: 14px; height: 14px;
+      transition: transform 0.2s;
+    }
+    .horn-chevron.open svg { transform: rotate(180deg); }
+    /* Subtle badge showing selected horn name (only when non-default is picked) */
+    .horn-chevron .badge {
+      display: none;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--hr-amber);
+      max-width: 90px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-right: 8px;
+      letter-spacing: 0.5px;
+    }
+    .horn-chevron.has-custom .badge { display: inline-block; }
+    @media (max-width: 720px) {
+      .horn-chevron .badge { display: none !important; }
+    }
+
+    /* ═══ Horn split-button group ═══════════════════════════════ */
+    /* Give the horn group its own stacking context so its menu
+       can float above the road, wheels, shayari, ticket, etc. */
+    .horn-group { position: relative; z-index: 90; isolation: isolate; }
+
+    /* ═══ Horn picker menu ══════════════════════════════════════ */
+    #horn-picker-menu {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 12px);
+      right: 0;
+      min-width: 280px;
+      max-width: 340px;
+      background: linear-gradient(135deg, rgba(11,37,69,0.98), rgba(6,24,46,0.98));
+      border: 1px solid rgba(232,163,61,0.35);
+      border-radius: 12px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+      padding: 8px;
+      z-index: 60;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+    #horn-picker-menu.show { display: block; animation: fadeIn 0.15s ease-out; }
+    #horn-picker-menu .head {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      color: rgba(232,163,61,0.7);
+      padding: 6px 10px 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+    .horn-opt {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.12s;
+      font-family: 'Hind', sans-serif;
+      font-size: 13px;
+      color: var(--hr-cream);
+    }
+    .horn-opt:hover { background: rgba(27,75,143,0.4); }
+    .horn-opt.active {
+      background: rgba(198,55,31,0.25);
+      color: var(--hr-amber);
+    }
+    .horn-opt .check {
+      width: 14px; text-align: center;
+      color: var(--hr-amber);
+      font-weight: 700;
+    }
+    .horn-opt .name {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .horn-opt .preview {
+      opacity: 0.5;
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: all 0.12s;
+    }
+    .horn-opt .preview:hover { opacity: 1; background: rgba(255,255,255,0.1); }
+    .horn-opt.default .name::after {
+      content: 'DEFAULT';
+      display: inline-block;
+      margin-left: 6px;
+      font-family: 'DM Mono', monospace;
+      font-size: 8px;
+      background: rgba(232,163,61,0.15);
+      color: var(--hr-amber);
+      padding: 1px 5px;
+      border-radius: 3px;
+      letter-spacing: 1px;
+      vertical-align: middle;
     }
 
     .btn-bell,
@@ -444,64 +627,99 @@
     }
 
     /* ═══ Shayari (signature 3) ══════════════════════════════════ */
+    /* Shayari — feels like a page from a diary, not a card */
     #shayari {
-      max-width: 640px;
-      margin: 26px auto 0;
-      padding: 18px 24px;
-      background: linear-gradient(135deg, rgba(11,37,69,0.5), rgba(6,24,46,0.35));
-      border: 1px solid rgba(232,163,61,0.2);
-      border-radius: 16px;
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      max-width: 680px;
+      margin: 30px auto 0;
+      padding: 4px 32px;
       text-align: center;
-      transition: opacity 0.6s;
+      position: relative;
+      transition: opacity 0.5s ease, transform 0.5s ease;
     }
+    /* Faint corner ornaments — hint at a frame without boxing it in */
+    #shayari::before,
+    #shayari::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 24px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(232,163,61,0.5));
+      transform: translateY(-50%);
+    }
+    #shayari::before { left: 0; }
+    #shayari::after  { right: 0; background: linear-gradient(-90deg, transparent, rgba(232,163,61,0.5)); }
+
     #shayari .quote-mark {
       font-family: 'Rozha One', serif;
-      font-size: 30px;
+      font-size: 46px;
       color: var(--hr-amber);
-      opacity: 0.6;
-      line-height: 0.6;
+      opacity: 0.35;
+      line-height: 0.2;
+      display: block;
+      margin-bottom: 4px;
     }
     #shayari .text {
       font-family: 'Tiro Devanagari Hindi', serif;
-      font-size: clamp(15px, 2.2vw, 20px);
+      font-size: clamp(16px, 2.4vw, 22px);
       color: var(--hr-cream);
       font-style: italic;
-      line-height: 1.5;
-      margin: 4px 0;
+      line-height: 1.55;
+      letter-spacing: 0.005em;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.5);
     }
     #shayari .attr {
       font-family: 'DM Mono', monospace;
       font-size: 10px;
-      letter-spacing: 2px;
+      letter-spacing: 2.5px;
       text-transform: uppercase;
-      color: rgba(232,163,61,0.6);
-      margin-top: 8px;
+      color: rgba(232,163,61,0.55);
+      margin-top: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
     }
-    #shayari.swap { opacity: 0.3; }
+    #shayari .attr::before {
+      content: '';
+      width: 20px;
+      height: 1px;
+      background: rgba(232,163,61,0.4);
+    }
+    #shayari.swap { opacity: 0; transform: translateY(6px); }
 
     /* ═══ Player (bottom) ═══════════════════════════════════════ */
     #player {
       position: fixed;
-      bottom: 12px;
-      left: 12px;
-      right: 12px;
+      bottom: 14px;
+      left: 14px;
+      right: 14px;
       max-width: 1080px;
       margin: 0 auto;
       z-index: 30;
-      background: linear-gradient(135deg, rgba(6,24,46,0.94), rgba(11,37,69,0.96));
-      border: 1px solid rgba(232,163,61,0.35);
+      background: linear-gradient(135deg, rgba(6,24,46,0.92), rgba(11,37,69,0.94));
+      border: 1px solid rgba(232,163,61,0.28);
       border-radius: 20px;
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
+      backdrop-filter: blur(28px) saturate(1.4);
+      -webkit-backdrop-filter: blur(28px) saturate(1.4);
       padding: 12px 18px;
       display: flex;
       align-items: center;
       gap: 14px;
       box-shadow:
         0 24px 60px rgba(0,0,0,0.6),
-        inset 0 1px 0 rgba(255,255,255,0.08);
+        0 0 0 1px rgba(232,163,61,0.05),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    /* Subtle warm glow above player edge */
+    #player::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: 20%;
+      right: 20%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(232,163,61,0.5), transparent);
+      pointer-events: none;
     }
 
     /* Vinyl disc */
@@ -509,7 +727,23 @@
       position: relative;
       flex-shrink: 0;
       width: 56px; height: 56px;
+      cursor: pointer;
+      transition: transform 0.2s;
     }
+    #disc-wrap:hover { transform: scale(1.05); }
+    #disc-wrap:active { transform: scale(0.95); }
+    /* Play/pause hint overlay on disc hover */
+    #disc-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.35);
+      opacity: 0;
+      transition: opacity 0.15s;
+      pointer-events: none;
+    }
+    #disc-wrap:hover::after { opacity: 1; }
     #disc {
       width: 100%; height: 100%;
       border-radius: 50%;
@@ -961,7 +1195,8 @@
 
 <body>
 
-<!-- Ambient stars -->
+<!-- Ambient layers -->
+<div id="grid"></div>
 <div id="stars"></div>
 
 <!-- Horn flash + toast -->
@@ -1207,11 +1442,25 @@
 
   <!-- Horn + Bell -->
   <div class="stage-controls">
-    <button class="btn-horn" id="horn-btn">
-      <span class="ping"></span>
-      <span>हॉर्न बजाओ!</span>
-      <span class="kbd">H / SPACE</span>
-    </button>
+    <div class="horn-group">
+      <button class="btn-horn" id="horn-btn">
+        <span class="ping"></span>
+        <span>हॉर्न बजाओ!</span>
+        <span class="kbd">H</span>
+      </button>
+      <button class="horn-chevron" id="horn-picker-btn" title="हॉर्न आवाज़ बदलो" aria-label="Choose horn sound" aria-haspopup="menu" aria-expanded="false">
+        <span class="badge" id="horn-badge"></span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m6 9 6 6 6-6"/>
+        </svg>
+      </button>
+      <div id="horn-picker-menu" role="menu">
+        <div class="head">हॉर्न आवाज़ चुनो</div>
+        <div id="horn-picker-list">
+          <div class="horn-opt" style="justify-content:center;opacity:0.5;font-size:12px;padding:20px;">लोड हो रहा है…</div>
+        </div>
+      </div>
+    </div>
     <button class="btn-light on" id="light-btn" title="हेडलाइट टॉगल करो">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/>
@@ -1227,9 +1476,9 @@
 
   <!-- Shayari (signature 3) -->
   <div id="shayari">
-    <div class="quote-mark">“</div>
+    <span class="quote-mark">“</span>
     <div class="text" id="shayari-text">सफ़र खूबसूरत है मंज़िल से भी</div>
-    <div class="attr" id="shayari-attr">— रोडवेज़ की एक शाम</div>
+    <div class="attr" id="shayari-attr">रोडवेज़ की एक शाम</div>
   </div>
 </main>
 
@@ -1448,11 +1697,15 @@ function onYtStateChange(e) {
   } else if (e.data === S.PAUSED) {
     isPlaying = false;
     updatePlayUI();
+    // Only stop road on true user pause (paused, not buffering/cued).
     document.body.classList.add('stopped');
   } else if (e.data === S.ENDED) {
     isPlaying = false;
     updatePlayUI();
+    // Keep the road moving — next track is on its way.
   } else if (e.data === S.CUED || e.data === S.BUFFERING) {
+    // Do NOT stop the road here — YT fires these during autoplay init
+    // and every track switch, which was freezing the scene.
     refreshTrack();
   }
 }
@@ -1478,7 +1731,8 @@ function updatePlayUI() {
   document.getElementById('play-icon').style.display  = isPlaying ? 'none'  : 'block';
   document.getElementById('pause-icon').style.display = isPlaying ? 'block' : 'none';
   document.getElementById('disc').classList.toggle('spinning', isPlaying);
-  document.body.classList.toggle('stopped', !isPlaying);
+  // Road/disc scroll based on user intent, not YT buffering state.
+  // updateBusState() is the single owner of `body.stopped`.
 }
 
 // ──────────────────────────────────────────────────────────────────
@@ -1488,6 +1742,10 @@ document.getElementById('play-btn').addEventListener('click', () => {
   if (!ytReady) return;
   if (isPlaying) ytPlayer.pauseVideo();
   else           ytPlayer.playVideo();
+});
+// Disc doubles as a big play/pause target
+document.getElementById('disc-wrap').addEventListener('click', () => {
+  document.getElementById('play-btn').click();
 });
 document.getElementById('next-btn').addEventListener('click', () => {
   if (!ytReady) return;
@@ -1521,7 +1779,29 @@ function blowHorn() {
   playHornSound();
 }
 
+// ── Horn sound: MP3 from /hornsound/ folder, with synth fallback ──
+const HORN_LS_KEY  = 'lalapari.horn';
+const HORN_FOLDER  = 'hornsound/';
+const AUDIO_EXT_RE = /\.(mp3|wav|ogg|m4a|aac)$/i;
+let hornList      = [];             // [{name, url}]
+let selectedHorn  = null;           // {name, url} or null → synth
+let hornAudio     = new Audio();    // shared HTMLAudioElement
+
 function playHornSound() {
+  if (selectedHorn) {
+    try {
+      hornAudio.src = selectedHorn.url;
+      hornAudio.currentTime = 0;
+      hornAudio.volume = 0.85;
+      const p = hornAudio.play();
+      if (p && p.catch) p.catch(() => playSynthHorn());
+      return;
+    } catch (e) { /* fall through to synth */ }
+  }
+  playSynthHorn();
+}
+
+function playSynthHorn() {
   try {
     const ctx  = new (window.AudioContext || window.webkitAudioContext)();
     const osc1 = ctx.createOscillator();
@@ -1540,6 +1820,137 @@ function playHornSound() {
     osc2.stop(ctx.currentTime + 0.45);
   } catch(e) {}
 }
+
+// Fetch /hornsound/ directory listing and parse audio files
+async function discoverHorns() {
+  try {
+    const res  = await fetch(HORN_FOLDER, { cache: 'no-store' });
+    if (!res.ok) return [];
+    const html = await res.text();
+    const doc  = new DOMParser().parseFromString(html, 'text/html');
+    const found = [];
+    doc.querySelectorAll('a[href]').forEach(a => {
+      const href = a.getAttribute('href');
+      if (!href || !AUDIO_EXT_RE.test(href)) return;
+      const url  = HORN_FOLDER + href;
+      const name = decodeURIComponent(href)
+        .replace(AUDIO_EXT_RE, '')
+        .replace(/[_-]+/g, ' ')
+        .trim();
+      found.push({ name, url });
+    });
+    return found;
+  } catch (e) {
+    return [];
+  }
+}
+
+function renderHornPicker() {
+  const list = document.getElementById('horn-picker-list');
+  const saved = (() => { try { return localStorage.getItem(HORN_LS_KEY); } catch { return null; } })();
+
+  // Default (synth) option + all discovered files
+  const opts = [{ name: 'क्लासिक (Synth)', url: null }, ...hornList];
+
+  // Restore saved selection
+  if (saved) {
+    const match = hornList.find(h => h.url === saved);
+    selectedHorn = match || null;
+  }
+
+  list.innerHTML = opts.map((h, i) => {
+    const isActive = (h.url === (selectedHorn ? selectedHorn.url : null));
+    return `
+      <div class="horn-opt ${isActive ? 'active' : ''} ${i === 0 ? 'default' : ''}" data-url="${h.url || ''}">
+        <span class="check">${isActive ? '✓' : ''}</span>
+        <span class="name">${h.name}</span>
+        ${h.url ? '<span class="preview" title="Preview">▶</span>' : ''}
+      </div>
+    `;
+  }).join('');
+
+  updateHornBadge();
+
+  // Wire clicks
+  list.querySelectorAll('.horn-opt').forEach(el => {
+    const url = el.dataset.url || null;
+    el.addEventListener('click', (e) => {
+      // Preview button — play but don't select
+      if (e.target.classList.contains('preview')) {
+        e.stopPropagation();
+        if (url) {
+          const prev = new Audio(url);
+          prev.volume = 0.7;
+          prev.play().catch(() => {});
+        }
+        return;
+      }
+      // Select this horn
+      selectedHorn = url ? hornList.find(h => h.url === url) : null;
+      try {
+        if (url) localStorage.setItem(HORN_LS_KEY, url);
+        else     localStorage.removeItem(HORN_LS_KEY);
+      } catch(err) {}
+      renderHornPicker();
+      // Auto-preview the selection
+      playHornSound();
+      closeHornPicker();
+    });
+  });
+}
+
+function openHornPicker() {
+  document.getElementById('horn-picker-menu').classList.add('show');
+  const btn = document.getElementById('horn-picker-btn');
+  btn.classList.add('open');
+  btn.setAttribute('aria-expanded', 'true');
+}
+function closeHornPicker() {
+  document.getElementById('horn-picker-menu').classList.remove('show');
+  const btn = document.getElementById('horn-picker-btn');
+  btn.classList.remove('open');
+  btn.setAttribute('aria-expanded', 'false');
+}
+
+function updateHornBadge() {
+  const btn   = document.getElementById('horn-picker-btn');
+  const badge = document.getElementById('horn-badge');
+  if (selectedHorn) {
+    // Short label — first word of the horn name
+    const short = selectedHorn.name.split(/\s+/)[0].toUpperCase();
+    badge.textContent = short;
+    btn.classList.add('has-custom');
+  } else {
+    badge.textContent = '';
+    btn.classList.remove('has-custom');
+  }
+}
+
+document.getElementById('horn-picker-btn').addEventListener('click', (e) => {
+  e.stopPropagation();
+  const menu = document.getElementById('horn-picker-menu');
+  if (menu.classList.contains('show')) closeHornPicker();
+  else openHornPicker();
+});
+document.addEventListener('click', (e) => {
+  const menu  = document.getElementById('horn-picker-menu');
+  const group = document.querySelector('.horn-group');
+  if (menu.classList.contains('show') && !group.contains(e.target)) closeHornPicker();
+});
+
+// Discover on load
+discoverHorns().then(list => {
+  hornList = list;
+  if (hornList.length === 0) {
+    document.getElementById('horn-picker-list').innerHTML =
+      '<div class="horn-opt" style="justify-content:center;opacity:0.5;font-size:12px;padding:16px;text-align:center;">' +
+      'कोई हॉर्न फ़ाइल नहीं मिली<br>' +
+      '<span style="font-family:DM Mono,monospace;font-size:10px;">Drop .mp3 files in /hornsound/</span>' +
+      '</div>';
+    return;
+  }
+  renderHornPicker();
+});
 
 document.getElementById('horn-btn').addEventListener('click', blowHorn);
 
@@ -1610,7 +2021,7 @@ function swapShayari() {
     shayariIdx = (shayariIdx + 1) % SHAYARIS.length;
     const s = SHAYARIS[shayariIdx];
     document.getElementById('shayari-text').textContent = s.t;
-    document.getElementById('shayari-attr').textContent = '— ' + s.a;
+    document.getElementById('shayari-attr').textContent = s.a;
     el.classList.remove('swap');
   }, 300);
 }
@@ -1722,10 +2133,8 @@ playlistInput.addEventListener('keydown', (e) => {
 // ──────────────────────────────────────────────────────────────────
 setTimeout(() => document.getElementById('hint').classList.add('gone'), 8000);
 
-// ──────────────────────────────────────────────────────────────────
-// Initial: pause road when not playing
-// ──────────────────────────────────────────────────────────────────
-document.body.classList.add('stopped');
+// Road keeps rolling by default — atmosphere > realism.
+// (Only pauses when user hits pause mid-song via onYtStateChange.)
 </script>
 
 </body>
