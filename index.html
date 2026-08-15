@@ -43,6 +43,10 @@
       user-select: none;
       -webkit-tap-highlight-color: transparent;
       padding-bottom: 120px;
+      /* Kills the 300ms delay + double-tap-zoom on mobile so our
+         dbl-tap-to-skip fires immediately without the browser
+         intercepting. Pinch-zoom still works. */
+      touch-action: manipulation;
     }
 
     /* Subtle film grain over everything */
@@ -601,21 +605,12 @@
     }
     #horn-flash.on { opacity: 1; }
 
-    /* ═══ Double-tap skip zones ══════════════════════════════════
-       Zones sit at z:1 — above the background grid/stars, but BELOW
-       everything interactive (bus stage z≥1, header z:20, player z:30,
-       modals z:100). So dbl-clicks on empty background trigger a skip;
-       dbl-clicks on the bus/UI/etc pass through and behave normally. */
-    .skip-zone {
-      position: fixed;
-      top: 0; bottom: 0;
-      width: 42%;
-      z-index: 1;
-      background: transparent;
-      cursor: default;
-    }
-    .skip-zone.left  { left: 0; }
-    .skip-zone.right { right: 0; }
+    /* ═══ Double-tap skip: no fixed overlays needed ═══════════════
+       Handled via a global pointerdown listener that checks the click
+       target — if it's NOT inside .no-skip (real buttons/player/modals),
+       the click's X position decides -10s (left half) or +10s (right).
+       So text, hero title, bus SVG, shayari, road ALL work as tap
+       targets, while horn/light/ticket/player never trigger a skip. */
 
     /* Ripple/toast that plays on each skip */
     .skip-ripple {
@@ -735,6 +730,86 @@
       #onboarding .divider-head .kicker { font-size: 9px; letter-spacing: 2px; }
       #onboarding .divider-head .title { font-size: 17px; }
       #onboarding .divider { top: 90px; }
+      /* Mobile: hide screen-halves UI, show seek-bar arrow instead */
+      #onboarding .divider,
+      #onboarding .divider-head,
+      #onboarding .hint-side,
+      #onboarding::before,
+      #onboarding::after { display: none; }
+      #onboarding { background: rgba(3, 8, 22, 0.55); }
+    }
+
+    /* Mobile onboarding — sits INSIDE the empty band above the player,
+       showing users that this area is tappable. Includes a dashed
+       vertical divider running through it to reinforce left/right split. */
+    #onboarding-mobile {
+      display: none;
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      pointer-events: auto;    /* tapping the card dismisses it */
+      cursor: pointer;
+      /* Position it inside the empty zone: above the raised player,
+         below the shayari. */
+      bottom: calc(80px + env(safe-area-inset-bottom, 20px) + 40px);
+      background: linear-gradient(135deg, rgba(11,37,69,0.72), rgba(6,24,46,0.72));
+      border: 1.5px dashed rgba(232,163,61,0.55);
+      border-radius: 16px;
+      padding: 18px 16px 16px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      overflow: hidden;
+    }
+    /* Vertical dashed line running down the middle of the hint */
+    #onboarding-mobile::before {
+      content: '';
+      position: absolute;
+      top: 10px; bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1.5px;
+      background-image: linear-gradient(to bottom, var(--hr-amber) 50%, transparent 50%);
+      background-size: 1.5px 8px;
+      opacity: 0.55;
+      pointer-events: none;
+    }
+    #onboarding-mobile .om-kicker {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 2.5px;
+      color: rgba(232,163,61,0.8);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    #onboarding-mobile .om-title {
+      font-family: 'Tiro Devanagari Hindi', serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--hr-cream);
+      line-height: 1.5;
+    }
+    #onboarding-mobile .om-tip {
+      font-size: 10.5px;
+      color: rgba(237,227,206,0.55);
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    #onboarding-mobile .om-halves {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      padding: 0 12px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--hr-amber);
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    @media (max-width: 720px) {
+      #onboarding-mobile { display: block; }
     }
     /* Subtle "left / right" tint on each half to reinforce the split */
     #onboarding::before,
@@ -922,6 +997,82 @@
       height: 1px;
       background: linear-gradient(90deg, transparent, rgba(232,163,61,0.5), transparent);
       pointer-events: none;
+    }
+
+    /* ═══ Seek bar ═══════════════════════════════════════════════ */
+    #seek {
+      position: absolute;
+      top: -6px;
+      left: 14px;
+      right: 14px;
+      height: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      touch-action: none;
+      z-index: 2;
+    }
+    /* Ripple hit-target hint — thin visible bar centered vertically */
+    #seek-track {
+      position: relative;
+      width: 100%;
+      height: 3px;
+      background: rgba(255,255,255,0.14);
+      border-radius: 999px;
+      overflow: visible;
+      transition: height 0.15s ease;
+    }
+    #seek:hover #seek-track,
+    #seek.scrubbing #seek-track { height: 5px; }
+    #seek-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--hr-red), var(--hr-amber));
+      border-radius: 999px;
+      pointer-events: none;
+      transition: width 0.35s linear;
+    }
+    #seek.scrubbing #seek-fill { transition: none; }
+    #seek-knob {
+      position: absolute;
+      top: 50%;
+      left: 0%;
+      transform: translate(-50%, -50%);
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--hr-amber);
+      opacity: 0;
+      box-shadow: 0 0 0 3px rgba(232,163,61,0.25);
+      pointer-events: none;
+      transition: opacity 0.15s ease, left 0.35s linear;
+    }
+    #seek:hover #seek-knob,
+    #seek.scrubbing #seek-knob { opacity: 1; }
+    #seek.scrubbing #seek-knob { transition: opacity 0.15s ease; }
+
+    /* Time labels sit outside the player top-left / top-right */
+    #seek-times {
+      position: absolute;
+      top: -22px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: rgba(237,227,206,0.4);
+      pointer-events: none;
+      letter-spacing: 0.5px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    #seek:hover ~ #seek-times,
+    #seek.scrubbing ~ #seek-times { opacity: 1; }
+    /* Always show on mobile since hover doesn't exist */
+    @media (max-width: 720px) {
+      #seek-times { opacity: 0.7; }
+      #seek { top: -8px; }
     }
 
     /* Vinyl disc */
@@ -1409,13 +1560,11 @@
 <div id="horn-flash"></div>
 <div id="horn-toast">📯 पों पों!</div>
 
-<!-- Double-tap skip zones + their ripple indicators -->
-<div class="skip-zone left"  id="skip-zone-left"></div>
-<div class="skip-zone right" id="skip-zone-right"></div>
+<!-- Skip ripple indicators (fired by global dbl-click delegation) -->
 <div class="skip-ripple left"  id="skip-ripple-left"><span class="num">10</span></div>
 <div class="skip-ripple right" id="skip-ripple-right"><span class="num">10</span></div>
 
-<!-- Onboarding hint (dashed vertical divider) -->
+<!-- Onboarding hint (desktop: dashed vertical divider · mobile: seek-bar card) -->
 <div id="onboarding" aria-hidden="true">
   <div class="divider-head">
     <div class="kicker">HOW TO USE</div>
@@ -1433,10 +1582,18 @@
     <div class="hint-title">आगे जाओ</div>
     <div class="hint-sub">DOUBLE-TAP</div>
   </div>
+
+  <!-- Mobile-only: card in the empty zone above the player -->
+  <div id="onboarding-mobile">
+    <div class="om-kicker">HOW TO USE</div>
+    <div class="om-title">इस जगह डबल-टैप करो<br>बाएँ ← -10s &nbsp;·&nbsp; दाएँ → +10s</div>
+    <div class="om-tip">या नीचे वाली लाइन को hold करके scrub करो</div>
+    <div class="om-halves"><span>← -10s</span><span>+10s →</span></div>
+  </div>
 </div>
 
 <!-- ═══ Header ═══════════════════════════════════════════════════ -->
-<header>
+<header class="no-skip">
   <div class="pill pill-live">
     <span class="dot"></span>
     <span class="name">रोडवेज़ चालू</span>
@@ -1673,7 +1830,7 @@
   </div>
 
   <!-- Horn + Bell -->
-  <div class="stage-controls">
+  <div class="stage-controls no-skip">
     <div class="horn-group">
       <button class="btn-horn" id="horn-btn">
         <span class="ping"></span>
@@ -1724,7 +1881,16 @@
 </div>
 
 <!-- ═══ Player ═══════════════════════════════════════════════════ -->
-<div id="player">
+<div id="player" class="no-skip">
+  <!-- Seek bar (progress + interactions) -->
+  <div id="seek" role="slider" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+    <div id="seek-track">
+      <div id="seek-fill"></div>
+      <div id="seek-knob"></div>
+    </div>
+  </div>
+  <div id="seek-times"><span id="seek-cur">0:00</span><span id="seek-dur">0:00</span></div>
+
   <div id="disc-wrap">
     <div id="disc">
       <div id="disc-inner">
@@ -1770,7 +1936,7 @@
 </div>
 
 <!-- Settings overlay -->
-<div id="settings-overlay">
+<div id="settings-overlay" class="no-skip">
   <div id="settings-panel">
     <h3>🎵 प्लेलिस्ट बदलो</h3>
     <p class="sub">
@@ -1800,7 +1966,7 @@
 <div id="yt-mount"></div>
 
 <!-- Ticket overlay -->
-<div id="ticket-overlay">
+<div id="ticket-overlay" class="no-skip">
   <div id="ticket">
     <div class="stamp">हरियाणा<br>रोडवेज़<br>✓</div>
     <div class="head">हरियाणा रोडवेज़</div>
@@ -2426,27 +2592,170 @@ function showSkipRipple(side) {
 function skipLeft()  { seekBy(-SKIP_SECONDS); showSkipRipple('left');  dismissOnboarding(); }
 function skipRight() { seekBy( SKIP_SECONDS); showSkipRipple('right'); dismissOnboarding(); }
 
-// Double-tap detection — works for both mouse and touch.
-// We can't just use `dblclick` because iOS Safari on <div>s is flaky;
-// this custom detector is symmetric across devices.
-function attachDoubleTap(el, handler) {
+// ══════════════════════════════════════════════════════════════════
+// Seek bar — progress polling + click/drag/dbl-tap interactions
+// ══════════════════════════════════════════════════════════════════
+const seekEl   = document.getElementById('seek');
+const fillEl   = document.getElementById('seek-fill');
+const knobEl   = document.getElementById('seek-knob');
+const curEl    = document.getElementById('seek-cur');
+const durEl    = document.getElementById('seek-dur');
+
+let seekScrubbing = false;    // user is dragging
+let seekScrubPct  = 0;
+let seekLastTap   = 0;
+let seekLastX     = 0;
+let seekLongPressT = null;
+
+function fmtTime(s) {
+  s = Math.max(0, Math.floor(s));
+  const m = Math.floor(s / 60);
+  const r = s % 60;
+  return `${m}:${r < 10 ? '0' : ''}${r}`;
+}
+
+function setSeekVisual(pct) {
+  fillEl.style.width = pct + '%';
+  knobEl.style.left  = pct + '%';
+}
+
+// Poll YT for current position — 4x per second is smooth enough
+setInterval(() => {
+  if (!ytReady || seekScrubbing) return;
+  try {
+    const dur = ytPlayer.getDuration()    || 0;
+    const cur = ytPlayer.getCurrentTime() || 0;
+    if (!dur) return;
+    const pct = Math.max(0, Math.min(100, (cur / dur) * 100));
+    setSeekVisual(pct);
+    curEl.textContent = fmtTime(cur);
+    durEl.textContent = fmtTime(dur);
+    seekEl.setAttribute('aria-valuenow', Math.round(pct));
+  } catch (e) {}
+}, 250);
+
+// Compute pct from a pointer event's X
+function pctFromEvent(e) {
+  const r = seekEl.getBoundingClientRect();
+  const x = (e.clientX ?? (e.touches && e.touches[0] && e.touches[0].clientX)) - r.left;
+  return Math.max(0, Math.min(100, (x / r.width) * 100));
+}
+
+// Long-press threshold — hold this long before drag becomes scrub
+const LONG_PRESS_MS = 200;
+
+seekEl.addEventListener('pointerdown', (e) => {
+  e.preventDefault();
+  seekEl.setPointerCapture(e.pointerId);
+
+  const now  = e.timeStamp || Date.now();
+  const isDbl = (now - seekLastTap < DBL_MS) && Math.abs(e.clientX - seekLastX) < 100;
+  seekLastTap = now;
+  seekLastX   = e.clientX;
+
+  if (isDbl) {
+    // Dbl-tap the seek bar: left half = -10s, right half = +10s
+    const r = seekEl.getBoundingClientRect();
+    if ((e.clientX - r.left) < r.width / 2) skipLeft();
+    else                                    skipRight();
+    seekLastTap = 0;
+    dismissOnboarding();
+    return;
+  }
+
+  // Otherwise, start long-press timer. If the user holds past the
+  // threshold OR moves >4px, we enter scrub mode. If they release
+  // before that, we treat it as a plain click-to-jump.
+  const startX = e.clientX;
+  let movedFar = false;
+
+  const onMove = (mv) => {
+    const dx = Math.abs(mv.clientX - startX);
+    if (!seekScrubbing && dx > 4) {
+      enterScrub();
+    }
+    if (seekScrubbing) {
+      const pct = pctFromEvent(mv);
+      seekScrubPct = pct;
+      setSeekVisual(pct);
+      if (ytReady) {
+        try {
+          const dur = ytPlayer.getDuration() || 0;
+          curEl.textContent = fmtTime(dur * pct / 100);
+        } catch (e) {}
+      }
+    }
+  };
+
+  const onUp = (up) => {
+    seekEl.removeEventListener('pointermove', onMove);
+    seekEl.removeEventListener('pointerup',   onUp);
+    seekEl.removeEventListener('pointercancel', onUp);
+    clearTimeout(seekLongPressT);
+
+    if (seekScrubbing) {
+      // Commit scrub position
+      if (ytReady) {
+        try {
+          const dur = ytPlayer.getDuration() || 0;
+          ytPlayer.seekTo(dur * seekScrubPct / 100, true);
+        } catch (e) {}
+      }
+      exitScrub();
+    } else if (!movedFar) {
+      // Plain click → jump to that spot
+      const pct = pctFromEvent(up);
+      setSeekVisual(pct);
+      if (ytReady) {
+        try {
+          const dur = ytPlayer.getDuration() || 0;
+          ytPlayer.seekTo(dur * pct / 100, true);
+        } catch (e) {}
+      }
+    }
+    dismissOnboarding();
+  };
+
+  seekLongPressT = setTimeout(enterScrub, LONG_PRESS_MS);
+  seekEl.addEventListener('pointermove',   onMove);
+  seekEl.addEventListener('pointerup',     onUp);
+  seekEl.addEventListener('pointercancel', onUp);
+});
+
+function enterScrub() {
+  if (seekScrubbing) return;
+  seekScrubbing = true;
+  seekEl.classList.add('scrubbing');
+}
+function exitScrub() {
+  seekScrubbing = false;
+  seekEl.classList.remove('scrubbing');
+}
+
+// Global double-tap. Fires anywhere on the empty scene (text, hero,
+// bus, road, shayari) — EXCEPT inside `.no-skip` (real controls).
+// Works on both desktop and mobile: on mobile the "clear zone" is
+// naturally the empty area between the shayari and the player, since
+// everything above is a real element or a .no-skip button.
+(function attachGlobalDoubleTap() {
   let lastTs = 0;
-  const trigger = (e) => {
+  let lastX  = 0;
+  document.addEventListener('pointerdown', (e) => {
+    if (e.target.closest('.no-skip')) return;
+    if (e.button !== undefined && e.button !== 0) return;
     const now = e.timeStamp || Date.now();
-    if (now - lastTs < DBL_MS) {
+    if (now - lastTs < DBL_MS && Math.abs(e.clientX - lastX) < 80) {
       lastTs = 0;
-      handler(e);
+      const half = window.innerWidth / 2;
+      if (e.clientX < half) skipLeft();
+      else                  skipRight();
       e.preventDefault();
     } else {
       lastTs = now;
+      lastX  = e.clientX;
     }
-  };
-  // Prefer pointerdown — one event covers mouse + touch + pen
-  el.addEventListener('pointerdown', trigger);
-}
-
-attachDoubleTap(document.getElementById('skip-zone-left'),  skipLeft);
-attachDoubleTap(document.getElementById('skip-zone-right'), skipRight);
+  });
+})();
 
 // ── Onboarding hint (shows every page load) ───────────────────────
 let onboardTimer = null;
